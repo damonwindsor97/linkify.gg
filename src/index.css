@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+background-color: #303030;
+}
+
+.app {
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+}
+
+.myGrid {
+    position: relative;
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    background: linear-gradient(90deg, #000000 1px, transparent 1px),
+                linear-gradient(180deg, #000000 1px, transparent 1px);
+    background-size: 15px 15px; 
+    background-repeat: repeat;
+
+}
+
+.myGrid::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent, #303030); 
+    z-index: 0;
+}
+.myGrid > * {
+    position: relative;
+    z-index: 1;
+}
