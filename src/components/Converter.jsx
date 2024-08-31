@@ -59,13 +59,13 @@ function Converter() {
     };
 
     const resetState = () => {
+      setUrl('');
       setError(false);
       setSuccess(false);
       setSoundcloudUrl(null);
       setTinyURL(null);
       setYoutubeURL(null);
 
-      document.getElementById('linkInput').value = ''
     }
   
     const shortenUrl = async () => {
