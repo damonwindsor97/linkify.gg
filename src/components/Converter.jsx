@@ -249,7 +249,7 @@ function Converter() {
         <div className="">
           <div className='relative '>
             <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
-            <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600' onClick={resetState}><GrPowerReset/></p>
+            <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
           </div>
   
           <form onSubmit={handleSubmit}>
@@ -282,12 +282,6 @@ function Converter() {
             </button>
           </form>
         </div>
-        {tinyURL && (
-            <div className=" mt-2">
-              <p className="text-xl text-center font-bold text-white font-inter">Your tiny URL is:</p>
-              <a href={tinyURL}><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
-            </div>
-        )}
         {youtubeURL && (
           <div className="mt-2">
             <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 30 seconds, depending on quality & length.</p>
@@ -295,13 +289,19 @@ function Converter() {
         )}
         {error && (
             <div className=" mt-2">
-                <p className="text-lg text-center font-bold text-red-400 font-inter">Error Converting; please try again</p>
+              <p className="text-lg text-center font-bold text-red-400 font-inter">Error Converting; please try again</p>
             </div>
         )}
         {success && (
-            <div className=" mt-2">
-                <p className="text-xl text-center font-bold text-green-400 font-inter">Successfully Converted.</p>
-            </div>
+          <div className=" mt-2">
+            <p className="text-xl text-center font-bold text-green-400 font-inter">Successfully Converted.</p>
+          </div>
+        )}
+        {tinyURL && (
+          <div className=" mt-2">
+            <p className="text-xl text-center font-bold text-white font-inter">Your tiny URL is:</p>
+            <a href={tinyURL}><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
+          </div>
         )}
         {soundcloudURL && (
           <div className="">
