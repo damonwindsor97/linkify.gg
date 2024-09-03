@@ -118,28 +118,28 @@ function Converter() {
           setTinyURL(null)
           setYoutubeURL(null);
     
-        //   const video = await axios.post("http://localhost:5000/youtube/downloadMp3", 
-        //   { link: youtubeUrl },
-        // {
-        //   responseType: 'blob',
-        // });
-    
-        const video = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
-        { link: youtubeUrl },
+          const video = await axios.post("http://localhost:5000/youtube/downloadMp3", 
+          { link: youtubeUrl },
         {
           responseType: 'blob',
         });
+    
+        // const video = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
+        // { link: youtubeUrl },
+        // {
+        //   responseType: 'blob',
+        // });
     
         const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
         { link: youtubeUrl }
         );
     
-        const blob = new Blob([video.data], { type: 'audio/m4a'});
+        const blob = new Blob([video.data], { type: 'audio/mp4'});
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
     
         link.href = url;
-        link.setAttribute('download', `${title.data}.mp3`)
+        link.setAttribute('download', `${title.data}.m4a`)
     
         document.body.appendChild(link)
         link.click()
@@ -151,7 +151,6 @@ function Converter() {
           setError(true)
           console.log(error)
         }
-
     };
   
     const convertYoutubeToMp4 = async () => {
@@ -242,6 +241,22 @@ function Converter() {
           setError(true);
       }
 
+    };
+
+    const convertSpotifyToMp3 = async () => {
+      const spotifyURL = document.getElementById('linkInput');
+      
+      try {
+        setSuccess(false);
+        setError(false);
+        setTinyURL(null);
+        setLoading(true);
+        setSoundcloudUrl(null);
+        setYoutubeURL(null);
+        
+      } catch (error) {
+        console.log(error)
+      }
     };
   
     return (
