@@ -8,7 +8,7 @@ import { GrPowerReset } from "react-icons/gr";
 
 import SoundcloudLogo from '../assets/soundcloud-white.png'
 import YouTubeLogo from '../assets/yt-white.png'
-
+import SpotifyLogo from '../assets/spotify-white.png'
 
 
 function Converter() {
@@ -53,6 +53,9 @@ function Converter() {
         case 40:
           convertSoundcloudToMp3(url);
           break;
+        case 50:
+          convertSpotifyToMp3(url);
+          break;
         default:
           alert('Please select a valid utility.');
       }
@@ -60,12 +63,12 @@ function Converter() {
 
     const resetState = () => {
       setUrl('');
+      setSelectedUtility(null)
       setError(false);
       setSuccess(false);
       setSoundcloudUrl(null);
       setTinyURL(null);
       setYoutubeURL(null);
-
     }
   
     const shortenUrl = async () => {
@@ -244,7 +247,7 @@ function Converter() {
     };
 
     const convertSpotifyToMp3 = async () => {
-      const spotifyURL = document.getElementById('linkInput');
+      const spotifyURL = document.getElementById('linkInput').value;
       
       try {
         setSuccess(false);
@@ -253,7 +256,27 @@ function Converter() {
         setLoading(true);
         setSoundcloudUrl(null);
         setYoutubeURL(null);
-        
+
+        // const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob'});
+        // const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL}, { responseType: 'blob'})
+
+        const response = await axios.post("http://localhost:5000/spotify/downloadMp3", { link: spotifyURL }, {
+            responseType: 'blob',
+            crossDomain: true
+        });
+        const title = await axios.post("http://localhost:5000/spotify/getTitle", { link: spotifyURL });
+
+        const blob = new Blob([response.data], { type: 'video/mp4'})
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute('download', `${title.data}.mp4`);
+        document.body.appendChild(link);
+        link.click();
+  
+        setSuccess(true);
+        setLoading(false);
       } catch (error) {
         console.log(error)
       }
@@ -285,9 +308,10 @@ function Converter() {
                 >
                   <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
                     <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
-                    <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
+                    <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3/m4a</Option>   
                     <Option value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4</Option>   
-                    <Option value={40} className="p-3 flex items-center bg-gradient-to-r from-orange-700 to-orange-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
+                    <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
+                    <Option value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
                   </div>
                 </Select>
               </div>
