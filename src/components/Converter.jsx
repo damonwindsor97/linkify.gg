@@ -257,14 +257,14 @@ function Converter() {
         setSoundcloudUrl(null);
         setYoutubeURL(null);
 
-        // const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob'});
-        // const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL}, { responseType: 'blob'})
+        const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob'});
+        const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL}, { responseType: 'blob'})
 
-        const response = await axios.post("http://localhost:5000/spotify/downloadMp3", { link: spotifyURL }, {
-            responseType: 'blob',
-            crossDomain: true
-        });
-        const title = await axios.post("http://localhost:5000/spotify/getTitle", { link: spotifyURL });
+        // const response = await axios.post("http://localhost:5000/spotify/downloadMp3", { link: spotifyURL }, {
+        //     responseType: 'blob',
+        //     crossDomain: true
+        // });
+        // const title = await axios.post("http://localhost:5000/spotify/getTitle", { link: spotifyURL });
 
         const blob = new Blob([response.data], { type: 'video/mp4'})
         const url = window.URL.createObjectURL(blob);
