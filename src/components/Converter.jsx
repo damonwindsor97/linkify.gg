@@ -96,7 +96,7 @@ function Converter() {
 
     const resetState = () => {
       setUrl('');
-
+      setSelectedUtility(null)
       setError(false);
       setSuccess(false);
       setSoundcloudUrl(null);
@@ -202,19 +202,19 @@ function Converter() {
         setComplete(false)
         setProgress(false)
   
-        const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
-          { link: youtubeURL },
-          {
-            responseType: 'blob',
-            crossDomain: true
-          });
-        
-        // const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+        // const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
         //   { link: youtubeURL },
         //   {
         //     responseType: 'blob',
         //     crossDomain: true
         //   });
+        
+        const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+          { link: youtubeURL },
+          {
+            responseType: 'blob',
+            crossDomain: true
+          });
   
         const title = await axios.post('https://media-download-api.onrender.com/youtube/getTitle',
           { link: youtubeURL }
