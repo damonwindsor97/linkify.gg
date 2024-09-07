@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';
 import { BarLoader } from 'react-spinners';
 import { GrPowerReset } from "react-icons/gr";
+import { LinearProgress, Typography } from '@mui/material'
+import {io} from 'socket.io-client';
 
 import SoundcloudLogo from '../assets/soundcloud-white.png'
 import YouTubeLogo from '../assets/yt-white.png'
@@ -18,10 +20,41 @@ function Converter() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
     const [success, setSuccess] = useState(false);
+    const [progress, setProgress] = useState(0)
+    const [complete, setComplete] = useState(false)
 
     const [tinyURL, setTinyURL] = useState(null);
     const [soundcloudURL, setSoundcloudUrl] = useState(null)
     const [youtubeURL, setYoutubeURL] = useState(null)
+
+    useEffect(() => {
+      // const socket = io('http://localhost:5000', {
+      //   withCredentials: true,
+      // });
+      const socket = io('https://media-download-api.onrender.com', {
+        withCredentials: true,
+      });
+
+      socket.on('connect', () => {
+        console.log('Connected to server')
+      })
+
+      socket.on('connect_error', (error) => {
+        console.error('Connection error:', error);
+      });
+
+      socket.on('downloadProgress', (percent) => {
+        setProgress(percent);
+      });
+
+      socket.on('downloadComplete', () => {
+        setComplete(true)
+      });
+
+      return () => {
+        socket.disconnect();
+      }
+    }, []);
 
   
     const handleUrlChange = (e) => {
@@ -63,7 +96,7 @@ function Converter() {
 
     const resetState = () => {
       setUrl('');
-      setSelectedUtility(null)
+
       setError(false);
       setSuccess(false);
       setSoundcloudUrl(null);
@@ -166,20 +199,22 @@ function Converter() {
         setSoundcloudUrl(null)
         setTinyURL(null)
         setYoutubeURL(true);
+        setComplete(false)
+        setProgress(false)
   
-        // const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
-        //   { link: youtubeURL },
-        //   {
-        //     responseType: 'blob',
-        //     crossDomain: true
-        //   });
-        
-        const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+        const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
           { link: youtubeURL },
           {
             responseType: 'blob',
             crossDomain: true
           });
+        
+        // const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+        //   { link: youtubeURL },
+        //   {
+        //     responseType: 'blob',
+        //     crossDomain: true
+        //   });
   
         const title = await axios.post('https://media-download-api.onrender.com/youtube/getTitle',
           { link: youtubeURL }
@@ -325,6 +360,10 @@ function Converter() {
         {youtubeURL && (
           <div className="mt-2">
             <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 30 seconds, depending on quality & length.</p>
+            <LinearProgress variant="determinate" value={progress} className='m-2'/>
+            <Typography variant="body2" color="#fff" align="center">
+                {complete ? 'Conversion Complete!' : `${Math.round(progress)}%`}
+            </Typography>
           </div>
         )}
         {error && (
