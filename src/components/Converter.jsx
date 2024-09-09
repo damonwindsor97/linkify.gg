@@ -210,13 +210,23 @@ function Converter() {
         setComplete(false)
         setProgress(false)
   
-        const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
+        // LOCAL TESTING -----------------
+        // const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
+        //   { link: youtubeURL },
+        //   {
+        //     responseType: 'blob',
+        //     crossDomain: true
+        //   });
+        
+        // LIVE DEV TESTING -------------------------
+        const video = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
           { link: youtubeURL },
           {
             responseType: 'blob',
             crossDomain: true
           });
-        
+
+        // LIVE -------------------
         // const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
         //   { link: youtubeURL },
         //   {
