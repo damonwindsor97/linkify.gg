@@ -28,12 +28,20 @@ function Converter() {
     const [youtubeURL, setYoutubeURL] = useState(null)
 
     useEffect(() => {
+      // LOCAL TESTING --------------------------
       // const socket = io('http://localhost:5000', {
       //   withCredentials: true,
       // });
-      const socket = io('https://media-download-api.onrender.com', {
+
+      // LIVE DEV TESTING ----------------------
+      const socket = io('https://dev-media-download-api.onrender.com', {
         withCredentials: true,
       });
+
+      // LIVE -------------------------
+      // const socket = io('https://media-download-api.onrender.com', {
+      //   withCredentials: true,
+      // });
 
       socket.on('connect', () => {
         console.log('Connected to server')
@@ -202,19 +210,19 @@ function Converter() {
         setComplete(false)
         setProgress(false)
   
-        // const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
-        //   { link: youtubeURL },
-        //   {
-        //     responseType: 'blob',
-        //     crossDomain: true
-        //   });
-        
-        const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+        const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
           { link: youtubeURL },
           {
             responseType: 'blob',
             crossDomain: true
           });
+        
+        // const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+        //   { link: youtubeURL },
+        //   {
+        //     responseType: 'blob',
+        //     crossDomain: true
+        //   });
   
         const title = await axios.post('https://media-download-api.onrender.com/youtube/getTitle',
           { link: youtubeURL }
