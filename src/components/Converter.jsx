@@ -31,6 +31,16 @@ function Converter() {
       // const socket = io('http://localhost:5000', {
       //   withCredentials: true,
       // });
+<<<<<<< Updated upstream
+=======
+
+      // LIVE DEV TESTING ----------------------
+      // const socket = io('https://dev-media-download-api.onrender.com', {
+      //   withCredentials: true,
+      // });
+
+      // LIVE -------------------------
+>>>>>>> Stashed changes
       const socket = io('https://media-download-api.onrender.com', {
         withCredentials: true,
       });
@@ -209,6 +219,18 @@ function Converter() {
         //     crossDomain: true
         //   });
         
+<<<<<<< Updated upstream
+=======
+        // LIVE DEV TESTING -------------------------
+        // const video = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
+        //   { link: youtubeURL },
+        //   {
+        //     responseType: 'blob',
+        //     crossDomain: true
+        //   });
+
+        // LIVE -------------------
+>>>>>>> Stashed changes
         const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
           { link: youtubeURL },
           {
