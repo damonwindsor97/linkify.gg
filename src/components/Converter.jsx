@@ -320,9 +320,7 @@ function Converter() {
         const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
 
         // const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
-
         const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL});
-
 
 
         // const response = await axios.post("http://localhost:5000/spotify/downloadMp3", { link: spotifyURL }, {
