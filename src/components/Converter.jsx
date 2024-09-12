@@ -314,9 +314,16 @@ function Converter() {
         setSoundcloudUrl(null);
         setYoutubeURL(null);
 
-        const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
+
+
+
+        const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
+
+        // const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
 
         const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL});
+
+
 
         // const response = await axios.post("http://localhost:5000/spotify/downloadMp3", { link: spotifyURL }, {
         //     responseType: 'blob',
@@ -329,7 +336,7 @@ function Converter() {
         const link = document.createElement("a");
 
         link.href = url;
-        link.setAttribute('download', `${title.data}.mp4`);
+        link.setAttribute('download', `${title.data}.m4a`);
         document.body.appendChild(link);
         link.click();
   
