@@ -267,7 +267,11 @@ function Converter() {
           setTinyURL(null)
           setYoutubeURL(null);
 
-          const response = await axios.post("https://media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          // const response = await axios.post("https://media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          //     responseType: 'blob' 
+          // });
+
+          const response = await axios.post("https://dev-media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
               responseType: 'blob' 
           });
 
