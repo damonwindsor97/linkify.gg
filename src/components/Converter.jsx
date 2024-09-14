@@ -223,8 +223,10 @@ function Converter() {
         //     crossDomain: true
         //   });
         
+
         // LIVE DEV TESTING -------------------------
         // const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
+
         //   { link: youtubeURL },
         //   {
         //     responseType: 'blob',
@@ -232,12 +234,13 @@ function Converter() {
         //   });
 
         // LIVE -------------------
-        const response = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
-          { link: youtubeURL },
-          {
-            responseType: 'blob',
-            crossDomain: true
-          });
+         const response = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+
+        { link: youtubeURL },
+        {
+          responseType: 'blob',
+          crossDomain: true
+        });
   
         const title = await axios.post('https://media-download-api.onrender.com/youtube/getTitle',
           { link: youtubeURL }
@@ -402,7 +405,7 @@ function Converter() {
             <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 30 seconds, depending on quality & length.</p>
             <LinearProgress variant="determinate" value={progress} className='m-2'/>
             <Typography variant="body2" color="#fff" align="center">
-                {complete ? 'Conversion Complete!' : `${Math.round(progress)}%`}
+                {complete ? 'Almost there...' : `${Math.round(progress)}%`}
             </Typography>
           </div>
         )}
