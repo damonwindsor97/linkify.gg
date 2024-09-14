@@ -34,14 +34,14 @@ function Converter() {
       // });
 
       // LIVE DEV TESTING ----------------------
-      const socket = io('https://dev-media-download-api.onrender.com', {
-        withCredentials: true,
-      });
-
-      // LIVE -------------------------
-      // const socket = io('https://media-download-api.onrender.com', {
+      // const socket = io('https://dev-media-download-api.onrender.com', {
       //   withCredentials: true,
       // });
+
+      // LIVE -------------------------
+      const socket = io('https://media-download-api.onrender.com', {
+        withCredentials: true,
+      });
 
       socket.on('connect', () => {
         console.log('Connected to server')
@@ -162,13 +162,13 @@ function Converter() {
           setTinyURL(null)
           setYoutubeURL(null);
     
-        //   const video = await axios.post("http://localhost:5000/youtube/downloadMp3", 
+        //   const response = await axios.post("http://localhost:5000/youtube/downloadMp3", 
         //   { link: youtubeUrl },
         // {
         //   responseType: 'blob',
         // });
     
-        const video = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
+        const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
         { link: youtubeUrl },
         {
           responseType: 'blob',
@@ -177,8 +177,13 @@ function Converter() {
         const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
         { link: youtubeUrl }
         );
-    
-        const blob = new Blob([video.data], { type: 'audio/mp4'});
+
+        if (response.status === 429){
+          const data = response.json();
+          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
+        }
+
+        const blob = new Blob([response.data], { type: 'audio/mp4'});
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
     
@@ -211,7 +216,7 @@ function Converter() {
         setProgress(false)
   
         // LOCAL TESTING -----------------
-        // const video = await axios.post('http://localhost:5000/youtube/downloadMp4',
+        // const response = await axios.post('http://localhost:5000/youtube/downloadMp4',
         //   { link: youtubeURL },
         //   {
         //     responseType: 'blob',
@@ -219,26 +224,31 @@ function Converter() {
         //   });
         
         // LIVE DEV TESTING -------------------------
-        const video = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
-          { link: youtubeURL },
-          {
-            responseType: 'blob',
-            crossDomain: true
-          });
-
-        // LIVE -------------------
-        // const video = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+        // const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
         //   { link: youtubeURL },
         //   {
         //     responseType: 'blob',
         //     crossDomain: true
         //   });
+
+        // LIVE -------------------
+        const response = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
+          { link: youtubeURL },
+          {
+            responseType: 'blob',
+            crossDomain: true
+          });
   
         const title = await axios.post('https://media-download-api.onrender.com/youtube/getTitle',
           { link: youtubeURL }
         );
+
+        if (response.status === 429){
+          const data = response.json();
+          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
+        }
   
-        const blob = new Blob([video.data], { type: 'video/mp4'})
+        const blob = new Blob([response.data], { type: 'video/mp4'})
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -267,13 +277,13 @@ function Converter() {
           setTinyURL(null)
           setYoutubeURL(null);
 
-          // const response = await axios.post("https://media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
-          //     responseType: 'blob' 
-          // });
-
-          const response = await axios.post("https://dev-media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          const response = await axios.post("https://media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
               responseType: 'blob' 
           });
+
+          // const response = await axios.post("https://dev-media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          //     responseType: 'blob' 
+          // });
 
           const title = await axios.post("https://media-download-api.onrender.com/soundcloud/getTitle", { link: soundCloudUrl });
 
@@ -315,11 +325,9 @@ function Converter() {
         setYoutubeURL(null);
 
 
+        // const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
 
-
-        const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
-
-        // const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
+        const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
         const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL});
 
 
@@ -328,6 +336,11 @@ function Converter() {
         //     crossDomain: true
         // });
         // const title = await axios.post("http://localhost:5000/spotify/getTitle", { link: spotifyURL });
+
+        if (response.status === 429){
+          const data = response.json();
+          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
+        }
 
         const blob = new Blob([response.data], { type: 'video/mp4'})
         const url = window.URL.createObjectURL(blob);
@@ -395,7 +408,7 @@ function Converter() {
         )}
         {error && (
             <div className=" mt-2">
-              <p className="text-lg text-center font-bold text-red-400 font-inter">Error Converting; please try again</p>
+              <p className="text-lg text-center font-bold text-red-400 font-inter">{error}</p>
             </div>
         )}
         {success && (
