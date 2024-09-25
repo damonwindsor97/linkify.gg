@@ -178,7 +178,7 @@ function Converter() {
 
 
         // LIVE DEV TESTING -------------------------
-        const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
+        const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp3',
 
           { link: youtubeURL },
           {
