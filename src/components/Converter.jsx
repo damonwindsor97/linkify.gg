@@ -19,6 +19,7 @@ function Converter() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
+    const [errorMessage, setErrorMessage] = useState('')
     const [success, setSuccess] = useState(false);
     const [progress, setProgress] = useState(0)
     const [complete, setComplete] = useState(false)
@@ -34,14 +35,14 @@ function Converter() {
       // });
 
       // LIVE DEV TESTING ----------------------
-      // const socket = io('https://dev-media-download-api.onrender.com', {
-      //   withCredentials: true,
-      // });
-
-      // LIVE -------------------------
-      const socket = io('https://media-download-api.onrender.com', {
+      const socket = io('https://dev-media-download-api.onrender.com', {
         withCredentials: true,
       });
+
+      // LIVE -------------------------
+      // const socket = io('https://media-download-api.onrender.com', {
+      //   withCredentials: true,
+      // });
 
       socket.on('connect', () => {
         console.log('Connected to server')
@@ -121,6 +122,7 @@ function Converter() {
           setLoading(true);
           setSoundcloudUrl(null);
           setYoutubeURL(null);
+          setErrorMessage(' ')
     
           const response = await fetch('https://api.tinyurl.com/create?api_token=vQ2WHCQJ0IGLuiUD619IIYn0g1bzQeaiKdUkEAZ5c8sj5MBWc1oASTNqDFtD', {
             method: 'POST',
@@ -145,6 +147,7 @@ function Converter() {
           }
         } catch (error) {
           console.error("Error:", error);
+          setErrorMessage(error.message || 'An error occured')
           setLoading(false);
           setError(error);
           setSuccess(false)
@@ -161,26 +164,45 @@ function Converter() {
           setSoundcloudUrl(null)
           setTinyURL(null)
           setYoutubeURL(null);
+          setErrorMessage(' ');
     
         //   const response = await axios.post("http://localhost:5000/youtube/downloadMp3", 
         //   { link: youtubeUrl },
         // {
         //   responseType: 'blob',
         // });
-    
-        const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
-        { link: youtubeUrl },
-        {
-          responseType: 'blob',
-        });
-    
-        const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
+
+        // const title =  await axios.post("http://localhost:5000/youtube/getTitle",
+        //   { link: youtubeUrl }
+        //   );
+
+
+        // LIVE DEV TESTING -------------------------
+        const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
+
+          { link: youtubeURL },
+          {
+            responseType: 'blob',
+            crossDomain: true
+          });
+        const title =  await axios.post("https://dev-media-download-api.onrender.com/youtube/getTitle",
         { link: youtubeUrl }
         );
+    
+        // const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
+        // { link: youtubeUrl },
+        // {
+        //   responseType: 'blob',
+        // });
+    
+        // const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
+        // { link: youtubeUrl }
+        // );
 
         if (response.status === 429){
           const data = response.json();
           throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
+
         }
 
         const blob = new Blob([response.data], { type: 'audio/mp4'});
@@ -198,7 +220,9 @@ function Converter() {
         } catch (error) {
           setLoading(false)
           setError(true)
+          
           console.log(error)
+          setErrorMessage(error.message || 'An error occurred')
         }
     };
   
@@ -214,6 +238,7 @@ function Converter() {
         setYoutubeURL(true);
         setComplete(false)
         setProgress(false)
+        setErrorMessage(' ');
   
         // LOCAL TESTING -----------------
         // const response = await axios.post('http://localhost:5000/youtube/downloadMp4',
@@ -266,6 +291,7 @@ function Converter() {
         setError(true);
         setYoutubeURL(null);
         console.log(error);
+        setErrorMessage(error.message || 'An error occurred')
       }
     };
   
@@ -279,6 +305,7 @@ function Converter() {
           setSoundcloudUrl(false)
           setTinyURL(null)
           setYoutubeURL(null);
+          setErrorMessage(' ');
 
           const response = await axios.post("https://media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
               responseType: 'blob' 
@@ -309,7 +336,7 @@ function Converter() {
           setSoundcloudUrl(true)
           setLoading(false);
       } catch (error) {
-          console.log('Error fetching API', error);
+          setErrorMessage(error.message || 'An error occurred')
           setLoading(false);
           setError(true);
       }
@@ -326,6 +353,7 @@ function Converter() {
         setLoading(true);
         setSoundcloudUrl(null);
         setYoutubeURL(null);
+        setErrorMessage(' ')
 
 
         // const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
@@ -358,6 +386,7 @@ function Converter() {
         setLoading(false);
       } catch (error) {
         console.log(error)
+        setErrorMessage(error.message || 'An error occurred')
       }
     };
   
@@ -411,7 +440,7 @@ function Converter() {
         )}
         {error && (
             <div className=" mt-2">
-              <p className="text-lg text-center font-bold text-red-400 font-inter">{error}</p>
+              <p className="text-lg text-center font-bold text-red-400 font-inter">An Error occurred: {errorMessage}</p>
             </div>
         )}
         {success && (
