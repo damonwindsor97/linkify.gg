@@ -179,7 +179,7 @@ function Converter() {
 
         // LIVE DEV TESTING -------------------------
         const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp3',
-        { link: youtubeURL }, { responseType: 'blob' });
+        { link: youtubeUrl }, { responseType: 'blob' });
 
         const title =  await axios.post("https://dev-media-download-api.onrender.com/youtube/getTitle",
         { link: youtubeUrl });
