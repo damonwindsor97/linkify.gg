@@ -179,16 +179,12 @@ function Converter() {
 
         // LIVE DEV TESTING -------------------------
         const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp3',
+        { link: youtubeURL }, { responseType: 'blob' });
 
-          { link: youtubeURL },
-          {
-            responseType: 'blob',
-            crossDomain: true
-          });
         const title =  await axios.post("https://dev-media-download-api.onrender.com/youtube/getTitle",
-        { link: youtubeUrl }
-        );
+        { link: youtubeUrl });
     
+
         // const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
         // { link: youtubeUrl },
         // {
@@ -199,11 +195,6 @@ function Converter() {
         // { link: youtubeUrl }
         // );
 
-        if (response.status === 429){
-          const data = response.json();
-          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
-
-        }
 
         const blob = new Blob([response.data], { type: 'audio/mp4'});
         const url = window.URL.createObjectURL(blob);
