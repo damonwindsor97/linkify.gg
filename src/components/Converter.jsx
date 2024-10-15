@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';
 import { BarLoader } from 'react-spinners';
 import { GrPowerReset } from "react-icons/gr";
-import { LinearProgress, Typography } from '@mui/material'
-import {io} from 'socket.io-client';
+
 
 import SoundcloudLogo from '../assets/soundcloud-white.png'
 import YouTubeLogo from '../assets/yt-white.png'
@@ -19,50 +18,12 @@ function Converter() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
+    const [errorMessage, setErrorMessage] = useState('')
     const [success, setSuccess] = useState(false);
-    const [progress, setProgress] = useState(0)
-    const [complete, setComplete] = useState(false)
 
     const [tinyURL, setTinyURL] = useState(null);
     const [soundcloudURL, setSoundcloudUrl] = useState(null)
     const [youtubeURL, setYoutubeURL] = useState(null)
-
-    useEffect(() => {
-      // LOCAL TESTING --------------------------
-      // const socket = io('http://localhost:5000', {
-      //   withCredentials: true,
-      // });
-
-      // LIVE DEV TESTING ----------------------
-      // const socket = io('https://dev-media-download-api.onrender.com', {
-      //   withCredentials: true,
-      // });
-
-      // LIVE -------------------------
-      const socket = io('https://media-download-api.onrender.com', {
-        withCredentials: true,
-      });
-
-      socket.on('connect', () => {
-        console.log('Connected to server')
-      })
-
-      socket.on('connect_error', (error) => {
-        console.error('Connection error:', error);
-      });
-
-      socket.on('downloadProgress', (percent) => {
-        setProgress(percent);
-      });
-
-      socket.on('downloadComplete', () => {
-        setComplete(true)
-      });
-
-      return () => {
-        socket.disconnect();
-      }
-    }, []);
 
   
     const handleUrlChange = (e) => {
@@ -121,6 +82,7 @@ function Converter() {
           setLoading(true);
           setSoundcloudUrl(null);
           setYoutubeURL(null);
+          setErrorMessage(' ')
     
           const response = await fetch('https://api.tinyurl.com/create?api_token=vQ2WHCQJ0IGLuiUD619IIYn0g1bzQeaiKdUkEAZ5c8sj5MBWc1oASTNqDFtD', {
             method: 'POST',
@@ -145,6 +107,7 @@ function Converter() {
           }
         } catch (error) {
           console.error("Error:", error);
+          setErrorMessage(error.message || 'An error occured')
           setLoading(false);
           setError(error);
           setSuccess(false)
@@ -153,6 +116,7 @@ function Converter() {
   
     const convertYoutubeToMp3 = async () => {
         const youtubeUrl = document.getElementById("linkInput").value;
+        console.log("YouTube URL:", youtubeUrl); 
 
         try {
           setLoading(true)
@@ -161,29 +125,39 @@ function Converter() {
           setSoundcloudUrl(null)
           setTinyURL(null)
           setYoutubeURL(null);
+          setErrorMessage(' ');
     
-        //   const response = await axios.post("http://localhost:5000/youtube/downloadMp3", 
-        //   { link: youtubeUrl },
+          const response = await axios.post("http://localhost:5000/youtube/downloadMp3", 
+          { link: youtubeUrl },
+        {
+          responseType: 'blob',
+        });
+
+        const title =  await axios.post("http://localhost:5000/youtube/getTitle",
+          { link: youtubeUrl }
+          );
+
+
+        // LIVE DEV TESTING -------------------------
+        // const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp3',
+        // { link: youtubeUrl }, { responseType: 'blob' });
+
+        // const title =  await axios.post("https://dev-media-download-api.onrender.com/youtube/getTitle",
+        // { link: youtubeUrl });
+    
+
+        // const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
+        // { link: youtubeUrl },
         // {
         //   responseType: 'blob',
         // });
     
-        const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
-        { link: youtubeUrl },
-        {
-          responseType: 'blob',
-        });
-    
-        const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
-        { link: youtubeUrl }
-        );
+        // const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
+        // { link: youtubeUrl }
+        // );
 
-        if (response.status === 429){
-          const data = response.json();
-          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
-        }
 
-        const blob = new Blob([response.data], { type: 'audio/mp4'});
+        const blob = new Blob([response.data], { type: 'audio/mp3'});
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
     
@@ -198,7 +172,9 @@ function Converter() {
         } catch (error) {
           setLoading(false)
           setError(true)
+          
           console.log(error)
+          setErrorMessage(error.message || 'An error occurred')
         }
     };
   
@@ -214,6 +190,7 @@ function Converter() {
         setYoutubeURL(true);
         setComplete(false)
         setProgress(false)
+        setErrorMessage(' ');
   
         // LOCAL TESTING -----------------
         // const response = await axios.post('http://localhost:5000/youtube/downloadMp4',
@@ -246,11 +223,6 @@ function Converter() {
           { link: youtubeURL }
         );
 
-        if (response.status === 429){
-          const data = response.json();
-          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
-        }
-  
         const blob = new Blob([response.data], { type: 'video/mp4'})
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
@@ -266,6 +238,7 @@ function Converter() {
         setError(true);
         setYoutubeURL(null);
         console.log(error);
+        setErrorMessage(error.message || 'An error occurred')
       }
     };
   
@@ -279,8 +252,9 @@ function Converter() {
           setSoundcloudUrl(false)
           setTinyURL(null)
           setYoutubeURL(null);
+          setErrorMessage(' ');
 
-          const response = await axios.post("https://media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          const response = await axios.post("https://media-download-api.onrender.com/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
               responseType: 'blob' 
           });
 
@@ -288,7 +262,7 @@ function Converter() {
           //     responseType: 'blob' 
           // });
 
-          const title = await axios.post("https://media-download-api.onrender.com/soundcloud/getTitle", { link: soundCloudUrl });
+          const title = await axios.post("https://media-download-api.onrender.com/api/soundcloud/getTitle", { link: soundCloudUrl });
 
           // const response = await axios.post("http://localhost:5000/soundcloud/downloadMp3", { link: soundCloudUrl }, {
           //     responseType: 'blob' 
@@ -309,7 +283,7 @@ function Converter() {
           setSoundcloudUrl(true)
           setLoading(false);
       } catch (error) {
-          console.log('Error fetching API', error);
+          setErrorMessage(error.message || 'An error occurred')
           setLoading(false);
           setError(true);
       }
@@ -326,6 +300,7 @@ function Converter() {
         setLoading(true);
         setSoundcloudUrl(null);
         setYoutubeURL(null);
+        setErrorMessage(' ')
 
 
         // const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
@@ -340,10 +315,6 @@ function Converter() {
         // });
         // const title = await axios.post("http://localhost:5000/spotify/getTitle", { link: spotifyURL });
 
-        if (response.status === 429){
-          const data = response.json();
-          throw new Error(`${data.error}: ${data.message}. Retry after ${data.retryAfter} seconds.`)
-        }
 
         const blob = new Blob([response.data], { type: 'video/mp4'})
         const url = window.URL.createObjectURL(blob);
@@ -358,6 +329,7 @@ function Converter() {
         setLoading(false);
       } catch (error) {
         console.log(error)
+        setErrorMessage(error.message || 'An error occurred')
       }
     };
   
@@ -365,6 +337,10 @@ function Converter() {
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
         <div className="">
           <div className='relative '>
+          <p className='absolute font-inter text-sm font-extralight text-white '>Powered By:
+            {selectedUtility === 10 && " Tiny URL"}
+            {selectedUtility === 40 && " Linkify"}
+            </p>
             <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
             <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
           </div>
@@ -381,21 +357,21 @@ function Converter() {
               <div className='relative'>
                 <Select 
                   id="UtilitySelect" 
-                  className="m-auto p-2 text-xs md:text-base w-[100px] md:w-[300px] rounded-r-lg bg-[#3D4A48] font-inter font-bold active:brightness-75" 
+                  className="m-auto p-2 text-xs md:text-base w-[100px] md:w-[300px] rounded-r-lg bg-[#3D4A48] font-inter font-bold active:brightness-90 hover:brightness-95" 
                   placeholder="Select Utility" 
                   onChange={handleUtilityChange}
                 >
                   <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
                     <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
-                    <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
-                    <Option value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4</Option>   
+                    <Option disabled value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
+                    <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 "><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
                     <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
-                    <Option value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
+                    <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 "><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
                   </div>
                 </Select>
               </div>
             </div>
-            <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700' disabled={loading}>
+            <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
                 {loading ? <BarLoader /> : "Convert"}
             </button>
           </form>
@@ -403,15 +379,11 @@ function Converter() {
         {youtubeURL && (
           <div className="mt-2">
             <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 30 seconds, depending on quality & length.</p>
-            <LinearProgress variant="determinate" value={progress} className='m-2'/>
-            <Typography variant="body2" color="#fff" align="center">
-                {complete ? 'Almost there...' : `${Math.round(progress)}%`}
-            </Typography>
           </div>
         )}
         {error && (
             <div className=" mt-2">
-              <p className="text-lg text-center font-bold text-red-400 font-inter">{error}</p>
+              <p className="text-lg text-center font-bold text-red-400 font-inter">An Error occurred: {errorMessage}</p>
             </div>
         )}
         {success && (

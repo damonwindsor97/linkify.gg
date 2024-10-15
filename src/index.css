@@ -11,6 +11,15 @@ background-color: #303030;
 display: flex;
 flex-direction: column;
 min-height: 100vh;
+justify-content: space-between;
+}
+
+.app-content {
+
+}
+
+.footer {
+
 }
 
 .myGrid {
@@ -38,4 +47,9 @@ min-height: 100vh;
 .myGrid > * {
     position: relative;
     z-index: 1;
+}
+
+
+.indicator {
+    transition: left .4s;
 }

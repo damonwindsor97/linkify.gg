@@ -1,6 +1,6 @@
 import Showcase from "../components/Showcase"
 import Info from "../components/Info"
-import Converter from "../components/Converter"
+import ConvertCarousel from "../components/ConvertCarousel"
 
 function Home() {
   return (
@@ -13,8 +13,9 @@ function Home() {
             <div>
                 <Info/>
             </div>
-            <div >
-                <Converter/>
+
+            <div>
+                <ConvertCarousel/>
             </div>
         </div>
     </div>
