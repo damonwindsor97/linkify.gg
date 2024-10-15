@@ -5,15 +5,13 @@ import { Outlet } from "react-router-dom"
 function Layout() {
   return (
     <div className="app">
-        <div>
             <Navbar/>
-        </div>
 
-        <div className="min-h-[80%] flex-1">
+        <div className="app-content flex-grow">
             <Outlet/>
         </div>
 
-        <div className="mt-20">
+        <div className="">
             <Footer/>
         </div>
     </div>

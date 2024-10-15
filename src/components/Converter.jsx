@@ -337,6 +337,10 @@ function Converter() {
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
         <div className="">
           <div className='relative '>
+          <p className='absolute font-inter text-sm font-extralight text-white '>Powered By:
+            {selectedUtility === 10 && " Tiny URL"}
+            {selectedUtility === 40 && " Linkify"}
+            </p>
             <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
             <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
           </div>
@@ -358,16 +362,16 @@ function Converter() {
                   onChange={handleUtilityChange}
                 >
                   <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
-                    <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener - <span className='text-xs'>By TinyUrl</span></Option>   
-                    <Option disabled value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3 - <span className='text-xs'>By Linkify</span></Option>   
-                    <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 "><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 - <span className='text-xs'>By Linkify</span></Option>   
-                    <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3 - <span className='text-xs'>By Linkify</span></Option>   
-                    <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 "><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3 - <span className='text-xs'>By Linkify</span></Option>   
+                    <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
+                    <Option disabled value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
+                    <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 "><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
+                    <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
+                    <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 "><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
                   </div>
                 </Select>
               </div>
             </div>
-            <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700' disabled={loading}>
+            <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
                 {loading ? <BarLoader /> : "Convert"}
             </button>
           </form>
