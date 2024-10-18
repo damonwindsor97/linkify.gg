@@ -64,11 +64,6 @@ function Converter() {
     };
 
     const resetState = () => {
-      const inputField = document.getElementById('linkInput')
-      if(inputField){
-        inputField.value = '';
-      }
-
       setUrl('');
       setSelectedUtility(null)
       setError(false);
@@ -193,8 +188,6 @@ function Converter() {
         setSoundcloudUrl(null)
         setTinyURL(null)
         setYoutubeURL(true);
-        setComplete(false)
-        setProgress(false)
         setErrorMessage(' ');
   
         // LOCAL TESTING -----------------
@@ -262,18 +255,18 @@ function Converter() {
           const response = await axios.post("https://media-download-api.onrender.com/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
               responseType: 'blob' 
           });
-
-          // const response = await axios.post("https://dev-media-download-api.onrender.com/soundcloud/downloadMp3", { link: soundCloudUrl }, {
-          //     responseType: 'blob' 
-          // });
-
           const title = await axios.post("https://media-download-api.onrender.com/api/soundcloud/getTitle", { link: soundCloudUrl });
 
-          // const response = await axios.post("http://localhost:5000/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          // const response = await axios.post("https://dev-media-download-api.onrender.com/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
           //     responseType: 'blob' 
           // });
 
-          // const title = await axios.post("http://localhost:5000/soundcloud/getTitle", { link: soundCloudUrl });
+
+          // const response = await axios.post("http://localhost:5000/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
+          //     responseType: 'blob' 
+          // });
+
+          // const title = await axios.post("http://localhost:5000/api/soundcloud/getTitle", { link: soundCloudUrl });
 
           const blob = new Blob([response.data], { type: 'audio/mpeg' });
           const url = window.URL.createObjectURL(blob);
