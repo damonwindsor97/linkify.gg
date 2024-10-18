@@ -84,7 +84,7 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch('https://api.tinyurl.com/create?api_token=vQ2WHCQJ0IGLuiUD619IIYn0g1bzQeaiKdUkEAZ5c8sj5MBWc1oASTNqDFtD', {
+          const response = await fetch(`https://api.tinyurl.com/create?api_token=${process.env.TINY_URL_API_TOKEN}`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',

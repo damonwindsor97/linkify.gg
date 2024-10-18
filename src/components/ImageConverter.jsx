@@ -23,7 +23,7 @@ const ImageConverter = () => {
   const handleFileChange = (e) => {
     // get the file that's been selected
     const selectedFile = e.target.files[0];
-    console.log(selectedFile)
+    // console.log(selectedFile)
 
     if (selectedFile) {
       // get the file type after image/
