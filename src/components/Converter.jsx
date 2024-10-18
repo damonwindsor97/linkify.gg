@@ -397,7 +397,7 @@ function Converter() {
         )}
         {soundcloudURL && (
           <div className="">
-            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Some songs are only downloading 30sec, it is being looked into.</p>
+            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Soundcloud GO songs are only downloading 30sec, it is being looked into.</p>
           </div>
         )}
       </div>
