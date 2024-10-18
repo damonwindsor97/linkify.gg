@@ -64,6 +64,11 @@ function Converter() {
     };
 
     const resetState = () => {
+      const inputField = document.getElementById('linkInput')
+      if(inputField){
+        inputField.value = '';
+      }
+
       setUrl('');
       setSelectedUtility(null)
       setError(false);
