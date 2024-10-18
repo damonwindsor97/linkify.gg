@@ -273,7 +273,7 @@ function Converter() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute('download', `${title.data}.mp3`);
+          link.setAttribute('download', `${title.data}.m4a`);
           document.body.appendChild(link);
           link.click();
 
