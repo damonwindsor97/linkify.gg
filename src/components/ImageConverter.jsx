@@ -150,7 +150,7 @@ const ImageConverter = () => {
               <Option value="PNG" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">PNG</Option>   
               <Option value="JPG" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">JPG</Option>   
               <Option value="WEBP" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">WEBP</Option>   
-              {/* <Option value="ICO" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">ICO</Option>  */}
+              <Option value="ico" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">ICO</Option> 
             </div>
           </div>
         </Select>
