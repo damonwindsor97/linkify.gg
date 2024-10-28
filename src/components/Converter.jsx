@@ -33,6 +33,11 @@ function Converter() {
     const handleUtilityChange = (event, newValue) => {
       setSelectedUtility(newValue);
     };
+
+    const handleShortUrlClick = (e) => {
+      e.preventDefault();
+      window.location.href = tinyURL;
+    };
   
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -96,6 +101,7 @@ function Converter() {
           });
     
           const data = await response.json();
+          console.log(data)
     
           if (data.short) {
             setTinyURL(data.short);
@@ -335,7 +341,7 @@ function Converter() {
         <div className="">
           <div className='relative '>
           <p className='absolute font-inter text-sm font-extralight text-white '>Powered By:
-            {selectedUtility === 10 && " Tiny URL"}
+            {selectedUtility === 10 && " Linkify"}
             {selectedUtility === 40 && " Linkify"}
             </p>
             <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
@@ -391,7 +397,7 @@ function Converter() {
         {tinyURL && (
           <div className=" mt-2">
             <p className="text-xl text-center font-bold text-white font-inter">Your new URL is:</p>
-            <a href={tinyURL}><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
+            <a href={tinyURL} onClick={handleShortUrlClick}><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
           </div>
         )}
         {selectedUtility === 40 && (
