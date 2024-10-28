@@ -33,11 +33,6 @@ function Converter() {
     const handleUtilityChange = (event, newValue) => {
       setSelectedUtility(newValue);
     };
-
-    const handleShortUrlClick = (e) => {
-      e.preventDefault();
-      window.location.href = tinyURL;
-    };
   
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -397,7 +392,7 @@ function Converter() {
         {tinyURL && (
           <div className=" mt-2">
             <p className="text-xl text-center font-bold text-white font-inter">Your new URL is:</p>
-            <a href={tinyURL} onClick={handleShortUrlClick}><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
+            <a href={tinyURL} ><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
           </div>
         )}
         {selectedUtility === 40 && (
