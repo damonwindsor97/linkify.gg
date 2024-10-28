@@ -84,7 +84,7 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch(`https://api.tinyurl.com/create?api_token=vQ2WHCQJ0IGLuiUD619IIYn0g1bzQeaiKdUkEAZ5c8sj5MBWc1oASTNqDFtD`, {
+          const response = await fetch(`https://mdapi.xyz/api/url/shorten`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -92,14 +92,13 @@ function Converter() {
             },
             body: JSON.stringify({
               url: longURL,
-              domain: "tinyurl.com"
             })
           });
     
           const data = await response.json();
     
-          if (data.data && data.data.tiny_url) {
-            setTinyURL(data.data.tiny_url);
+          if (data.short) {
+            setTinyURL(data.short);
             setLoading(false);
             setSuccess(true)
           } else {
@@ -391,7 +390,7 @@ function Converter() {
         )}
         {tinyURL && (
           <div className=" mt-2">
-            <p className="text-xl text-center font-bold text-white font-inter">Your tiny URL is:</p>
+            <p className="text-xl text-center font-bold text-white font-inter">Your new URL is:</p>
             <a href={tinyURL}><span  className="text-blue-200 hover:text-blue-600 text-center">{tinyURL}</span></a>
           </div>
         )}
