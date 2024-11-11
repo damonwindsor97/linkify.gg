@@ -6,11 +6,9 @@ import { Option } from '@mui/base/Option';
 import { BarLoader } from 'react-spinners';
 import { GrPowerReset } from "react-icons/gr";
 
-
 import SoundcloudLogo from '../assets/soundcloud-white.png'
 import YouTubeLogo from '../assets/yt-white.png'
 import SpotifyLogo from '../assets/spotify-white.png'
-
 
 function Converter() {
     const [url, setUrl] = useState('');
@@ -72,7 +70,13 @@ function Converter() {
       setTinyURL(null);
       setYoutubeURL(null);
     }
-  
+
+    const extractYoutubeId = (url) => {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    };
+    
     const shortenUrl = async () => {
         const longURL = document.getElementById("linkInput").value;
         try {
@@ -115,120 +119,85 @@ function Converter() {
     };
   
     const convertYoutubeToMp3 = async () => {
-        const youtubeUrl = document.getElementById("linkInput").value;
-        console.log("YouTube URL:", youtubeUrl); 
+      const youtubeUrl = document.getElementById("linkInput").value;
+      
+      const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
+          ? extractYoutubeId(youtubeUrl) : youtubeUrl;
 
-        try {
-          setLoading(true)
-          setError(false)
-          setSuccess(false)
-          setSoundcloudUrl(null)
-          setTinyURL(null)
-          setYoutubeURL(null);
-          setErrorMessage(' ');
-    
-          const response = await axios.post("http://localhost:5000/youtube/downloadMp3", 
-          { link: youtubeUrl },
-        {
-          responseType: 'blob',
-        });
+      const options = {
+          method: 'GET',
+          url: 'https://youtube-mp36.p.rapidapi.com/dl',
+          params: { id: videoId }, 
+          headers: {
+              'x-rapidapi-key': import.meta.env.VITE_YOUTUBE_MP3_API_KEY,
+              'x-rapidapi-host': import.meta.env.VITE_YOUTUBE_MP3_API_HOST
+          }
+      };
 
-        const title =  await axios.post("http://localhost:5000/youtube/getTitle",
-          { link: youtubeUrl }
-          );
+      try {
+        setLoading(true)
+        setError(false)
+        setSuccess(false)
+        setSoundcloudUrl(null)
+        setTinyURL(null)
+        setYoutubeURL(null);
+        setErrorMessage(' ');
+  
+        const response = await axios.request(options);
+        console.log(response);
 
+        const link = document.createElement('a');
+        link.href = response.data.link;
+        link.setAttribute('download', `${response.data.title}.m4a`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link)
 
-        // LIVE DEV TESTING -------------------------
-        // const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp3',
-        // { link: youtubeUrl }, { responseType: 'blob' });
-
-        // const title =  await axios.post("https://dev-media-download-api.onrender.com/youtube/getTitle",
-        // { link: youtubeUrl });
-    
-
-        // const response = await axios.post("https://media-download-api.onrender.com/youtube/downloadMp3", 
-        // { link: youtubeUrl },
-        // {
-        //   responseType: 'blob',
-        // });
-    
-        // const title =  await axios.post("https://media-download-api.onrender.com/youtube/getTitle",
-        // { link: youtubeUrl }
-        // );
-
-
-        const blob = new Blob([response.data], { type: 'audio/mp3'});
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-    
-        link.href = url;
-        link.setAttribute('download', `${title.data}.m4a`)
-    
-        document.body.appendChild(link)
-        link.click()
-    
         setSuccess(true)
         setLoading(false)
-        } catch (error) {
-          setLoading(false)
-          setError(true)
-          
-          console.log(error)
-          setErrorMessage(error.message || 'An error occurred')
-        }
+        setYoutubeURL(null)
+      } catch (error) {
+        setLoading(false)
+        setError(true)
+        console.log(error)
+      }
     };
   
     const convertYoutubeToMp4 = async () => {
-      const youtubeURL = document.getElementById("linkInput").value;
+      const youtubeUrl = document.getElementById("linkInput").value;
+      
+      const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
+          ? extractYoutubeId(youtubeUrl) : youtubeUrl;
+
+      const options = {
+          method: 'GET',
+          url: 'https://ytstream-download-youtube-videos.p.rapidapi.com/dl',
+          params: { id: videoId }, 
+          headers: {
+              'x-rapidapi-key': import.meta.env.VITE_YOUTUBE_MP4_API_KEY,
+              'x-rapidapi-host': import.meta.env.VITE_YOUTUBE_MP4_API_HOST
+          }
+      };
 
       try {
-        setLoading(true);
-        setError(false);
-        setSuccess(false);
+        setLoading(true)
+        setError(false)
+        setSuccess(false)
         setSoundcloudUrl(null)
         setTinyURL(null)
-        setYoutubeURL(true);
+        setYoutubeURL(null);
         setErrorMessage(' ');
   
-        // LOCAL TESTING -----------------
-        // const response = await axios.post('http://localhost:5000/youtube/downloadMp4',
-        //   { link: youtubeURL },
-        //   {
-        //     responseType: 'blob',
-        //     crossDomain: true
-        //   });
-        
+        const response = await axios.request(options);
+        console.log(response.data);
 
-        // LIVE DEV TESTING -------------------------
-        // const response = await axios.post('https://dev-media-download-api.onrender.com/youtube/downloadMp4',
-
-        //   { link: youtubeURL },
-        //   {
-        //     responseType: 'blob',
-        //     crossDomain: true
-        //   });
-
-        // LIVE -------------------
-         const response = await axios.post('https://media-download-api.onrender.com/youtube/downloadMp4',
-
-        { link: youtubeURL },
-        {
-          responseType: 'blob',
-          crossDomain: true
-        });
-  
-        const title = await axios.post('https://media-download-api.onrender.com/youtube/getTitle',
-          { link: youtubeURL }
-        );
-
-        const blob = new Blob([response.data], { type: 'video/mp4'})
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute('download', `${title.data}.mp4`);
+        const link = document.createElement('a');
+        link.href = response.data.adaptiveFormats[14].url;
+        link.setAttribute('download', `${response.data.title}.mp4`);
         document.body.appendChild(link);
         link.click();
-  
+        document.body.removeChild(link)
+
         setSuccess(true);
         setLoading(false);
       } catch (error) {
@@ -337,6 +306,8 @@ function Converter() {
           <div className='relative '>
           <p className='absolute font-inter text-sm font-extralight text-white '>Powered By:
             {selectedUtility === 10 && " Linkify"}
+            {selectedUtility === 20 && " Rapid-API"}
+            {selectedUtility === 30 && " Rapid-API"}
             {selectedUtility === 40 && " Linkify"}
             </p>
             <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
@@ -361,10 +332,10 @@ function Converter() {
                 >
                   <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
                     <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
-                    <Option disabled value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
-                    <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 "><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
+                    <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
+                    <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
                     <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
-                    <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 "><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
+                    <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
                   </div>
                 </Select>
               </div>
