@@ -88,7 +88,7 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch(`https://mdapi.xyz/api/url/shorten`, {
+          const response = await fetch(`http://localhost:5000/api/url/shorten`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -165,19 +165,6 @@ function Converter() {
   
     const convertYoutubeToMp4 = async () => {
       const youtubeUrl = document.getElementById("linkInput").value;
-      
-      const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
-          ? extractYoutubeId(youtubeUrl) : youtubeUrl;
-
-      const options = {
-          method: 'GET',
-          url: 'https://ytstream-download-youtube-videos.p.rapidapi.com/dl',
-          params: { id: videoId }, 
-          headers: {
-              'x-rapidapi-key': import.meta.env.VITE_YOUTUBE_MP4_API_KEY,
-              'x-rapidapi-host': import.meta.env.VITE_YOUTUBE_MP4_API_HOST
-          }
-      };
 
       try {
         setLoading(true)
@@ -188,15 +175,21 @@ function Converter() {
         setYoutubeURL(null);
         setErrorMessage(' ');
   
-        const response = await axios.request(options);
-        console.log(response.data);
 
+        const response = await axios.post('http://localhost:5000/api/youtube/toMp4', { youtubeUrl }, {
+          responseType: 'blob'  
+        });
+
+        // Create a URL for the video blob
+        const url = URL.createObjectURL(response.data);
+        
+        // Create a link element and trigger the download
         const link = document.createElement('a');
-        link.href = response.data.adaptiveFormats[14].url;
-        link.setAttribute('download', `${response.data.title}.mp4`);
+        link.href = url;
+        link.setAttribute('download', `title.mp4`);  
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link)
+
 
         setSuccess(true);
         setLoading(false);
@@ -302,46 +295,48 @@ function Converter() {
   
     return (
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
-          <div className='relative '>
-          <p className='absolute font-inter text-sm font-extralight text-white '>Powered By:
+          <p className='absolute font-inter text-xs md:text-sm font-extralight text-white '>Powered By:
             {selectedUtility === 10 && " Linkify"}
             {selectedUtility === 20 && " Rapid-API"}
             {selectedUtility === 30 && " Rapid-API"}
             {selectedUtility === 40 && " Linkify"}
             </p>
-            <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
-            <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
-  
-          <form onSubmit={handleSubmit}>
-            <div className="flex m-4 text-white">
-              <input 
-                className="m-auto w-full bg-[#404040] p-2 rounded-l-lg mr-2 focus:outline-none focus:outline-blue-500"
-                value={url}
-                onChange={handleUrlChange}
-                id="linkInput"
-              />
-              
-              <div className='relative'>
-                <Select 
-                  id="UtilitySelect" 
-                  className="m-auto p-2 text-xs md:text-base w-[100px] md:w-[300px] rounded-r-lg bg-[#3D4A48] font-inter font-bold active:brightness-90 hover:brightness-95" 
-                  placeholder="Select Utility" 
-                  onChange={handleUtilityChange}
-                >
-                  <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
-                    <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
-                    <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
-                    <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
-                    <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
-                    <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
-                  </div>
-                </Select>
+          <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Upload your image &gt; Select your options &gt; click "Convert"</p>
+          <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
+
+          <div>
+            <form onSubmit={handleSubmit}>
+              <div className="flex m-4 text-white">
+                <input 
+                  className="m-auto w-full bg-[#404040] p-2 rounded-l-lg mr-2 focus:outline-none focus:outline-blue-500"
+                  value={url}
+                  onChange={handleUrlChange}
+                  id="linkInput"
+                />
+                
+                <div className='relative'>
+                  <Select 
+                    id="UtilitySelect" 
+                    className="m-auto p-2 text-xs md:text-base w-[100px] md:w-[300px] rounded-r-lg bg-[#3D4A48] font-inter font-bold active:brightness-90 hover:brightness-95" 
+                    placeholder="Select Utility" 
+                    onChange={handleUtilityChange}
+                  >
+                    <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
+                      <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
+                      <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
+                      <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
+                      <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
+                      <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
+                    </div>
+                  </Select>
+                </div>
               </div>
-            </div>
-            <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
-                {loading ? <BarLoader /> : "Convert"}
-            </button>
-          </form>
+              <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
+                  {loading ? <BarLoader /> : "Convert"}
+              </button>
+            </form>
+
+          </div>
 
         {youtubeURL && (
           <div className="mt-2">
