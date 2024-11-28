@@ -302,7 +302,6 @@ function Converter() {
   
     return (
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
-        <div className="">
           <div className='relative '>
           <p className='absolute font-inter text-sm font-extralight text-white '>Powered By:
             {selectedUtility === 10 && " Linkify"}
@@ -312,7 +311,6 @@ function Converter() {
             </p>
             <p className="font-inter text-white">Paste your URL &gt; Select a Utility from the dropdown &gt; click "Convert"</p>
             <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
-          </div>
   
           <form onSubmit={handleSubmit}>
             <div className="flex m-4 text-white">
@@ -344,7 +342,7 @@ function Converter() {
                 {loading ? <BarLoader /> : "Convert"}
             </button>
           </form>
-        </div>
+
         {youtubeURL && (
           <div className="mt-2">
             <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 30 seconds, depending on quality & length.</p>
