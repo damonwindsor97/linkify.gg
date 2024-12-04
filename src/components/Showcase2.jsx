@@ -7,8 +7,8 @@ function Showcase2() {
       <div className="md:flex mt-[100px] items-center justify-center h-full md:max-w-[1250px] mx-auto ">
         <div className="md:w-[50%] text-center z-10 relative">
           <div>
-            <p className='text-7xl p-2 font-semibold bg-gradient-to-r from-cyan-300 to-blue-600 inline-block text-transparent bg-clip-text'>Linkify</p>
-            <p className='text-3xl font-light text-gray-300'>Free and Easy converter</p>
+            <p className='select-none text-7xl p-2 font-semibold bg-gradient-to-r from-cyan-300 to-blue-600 inline-block text-transparent bg-clip-text animate-text'>Linkify</p>
+            <p className='select-none text-3xl font-light text-gray-300'>Free and Easy converter</p>
           </div>
         </div>
 

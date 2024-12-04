@@ -26,9 +26,20 @@ export default {
             transform: "scale(1) translate(-10%, -50%)"
           }
         },
+        text: {
+          '0%, 100%': {
+            'background-size':'200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size':'200% 200%',
+            'background-position': 'right center'
+          }
+      },
       },
       animation: {
         blob:  "blob 15s infinite",
+        text: 'text 5s ease infinite',
       },
       colors: {
         background: "#303030",

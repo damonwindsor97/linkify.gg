@@ -1,6 +1,5 @@
 // import Showcase from "../components/Showcase"
 import Showcase2 from "../components/Showcase2"
-import Info from "../components/Info"
 import ConvertCarousel from "../components/ConvertCarousel"
 
 function Home() {
@@ -17,9 +16,7 @@ function Home() {
                 <ConvertCarousel/>
             </div>
 
-            {/* <div>
-                <Info/>
-            </div> */}
+
         </div>
     </div>
   )
