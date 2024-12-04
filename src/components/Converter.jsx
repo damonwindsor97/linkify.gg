@@ -88,7 +88,8 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch(`http://localhost:5000/api/url/shorten`, {
+          const response = await fetch(`https://mdapi.xyz/api/url/shorten`, {
+
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -163,43 +164,9 @@ function Converter() {
       }
     };
   
-    const convertYoutubeToMp4 = async () => {
-      const youtubeUrl = document.getElementById("linkInput").value;
 
-      try {
-        setLoading(true)
-        setError(false)
-        setSuccess(false)
-        setSoundcloudUrl(null)
-        setTinyURL(null)
-        setYoutubeURL(null);
-        setErrorMessage(' ');
   
-
-        const response = await axios.post('http://localhost:5000/api/youtube/toMp4', { youtubeUrl }, {
-          responseType: 'blob'  
-        });
-
-        // Create a URL for the video blob
-        const url = URL.createObjectURL(response.data);
-        
-        // Create a link element and trigger the download
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `title.mp4`);  
-        document.body.appendChild(link);
-        link.click();
-
-
-        setSuccess(true);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        setError(true);
-        setYoutubeURL(null);
-        console.log(error);
-        setErrorMessage(error.message || 'An error occurred')
-      }
+    const convertYoutubeToMp4 = async () => {
     };
   
     const convertSoundcloudToMp3 = async () => {
@@ -251,46 +218,6 @@ function Converter() {
     };
 
     const convertSpotifyToMp3 = async () => {
-      const spotifyURL = document.getElementById('linkInput').value;
-      
-      try {
-        setSuccess(false);
-        setError(false);
-        setTinyURL(null);
-        setLoading(true);
-        setSoundcloudUrl(null);
-        setYoutubeURL(null);
-        setErrorMessage(' ')
-
-
-        // const response = await axios.post('https://dev-media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
-
-        const response = await axios.post('https://media-download-api.onrender.com/spotify/downloadMp3', { link: spotifyURL}, { responseType: 'blob', crossDomain: true});
-        const title = await axios.post('https://media-download-api.onrender.com/spotify/getTitle', { link: spotifyURL});
-
-
-        // const response = await axios.post("http://localhost:5000/spotify/downloadMp3", { link: spotifyURL }, {
-        //     responseType: 'blob',
-        //     crossDomain: true
-        // });
-        // const title = await axios.post("http://localhost:5000/spotify/getTitle", { link: spotifyURL });
-
-
-        const blob = new Blob([response.data], { type: 'video/mp4'})
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-
-        link.href = url;
-        link.setAttribute('download', `${title.data}.m4a`);
-        document.body.appendChild(link);
-        link.click();
-  
-        setSuccess(true);
-        setLoading(false);
-      } catch (error) {
-        console.log(error)
-        setErrorMessage(error.message || 'An error occurred')
-      }
     };
   
     return (
