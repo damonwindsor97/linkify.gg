@@ -6,7 +6,7 @@ function Navbar() {
     <div className='absolute w-full bg-opacity-20 backdrop-blur-sm z-50'>
         <div className='flex max-w-screen-xl m-auto items-center'>
             <div className='p-4 mr-6'>
-                <Link to="/"><img src={LinkifyLogo} className='w-32' alt='Linkify Logo'/></Link>
+            <p className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-500 to-blue-600 inline-block text-transparent bg-clip-text">Linkify<span className="text-white">.gg</span></p>
             </div>
 
             <div className='text-white font-inter font-semibold'>
