@@ -228,8 +228,7 @@ function Converter() {
             {selectedUtility === 30 && " Rapid-API"}
             {selectedUtility === 40 && " Linkify"}
             </p>
-          <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Upload your image &gt; Select your options &gt; click "Convert"</p>
-          <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
+          <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your Link &gt; Select your Utility &gt; click "Convert"</p>
 
           <div>
             <form onSubmit={handleSubmit}>
@@ -261,6 +260,7 @@ function Converter() {
               <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
                   {loading ? <BarLoader /> : "Convert"}
               </button>
+              
             </form>
 
           </div>
