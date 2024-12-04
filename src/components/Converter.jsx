@@ -89,6 +89,7 @@ function Converter() {
           setErrorMessage(' ')
     
           const response = await fetch(`https://mdapi.xyz/api/url/shorten`, {
+
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -162,6 +163,8 @@ function Converter() {
         console.log(error)
       }
     };
+  
+
   
     const convertYoutubeToMp4 = async () => {
     };
