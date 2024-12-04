@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom"
 function Layout() {
   return (
     <div className="app">
-            <Navbar/>
+        <Navbar/>
 
         <div className="app-content flex-grow">
             <Outlet/>

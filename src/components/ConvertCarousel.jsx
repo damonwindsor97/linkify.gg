@@ -32,7 +32,7 @@ function ConvertCarousel() {
           <div
             role="tablist"
             aria-label="tabs"
-            className="relative w-max mx-auto h-12 grid grid-cols-3 rounded-full overflow-hidden shadow-2xl px-[3px] items-center border border-slate-400/20 shadow-900/20 transition font-roboto"
+            className="relative w-max mx-auto h-12 grid grid-cols-2 rounded-full overflow-hidden shadow-2xl px-[3px] items-center border border-slate-400/20 shadow-900/20 transition font-roboto"
           >
             <div className="absolute w-32 h-11 my-auto bottom-0 top-0 left-0 rounded-full bg-main shadow-md indicator"></div>
             <button
@@ -57,17 +57,6 @@ function ConvertCarousel() {
             >
               <span className="text-gray-300">Images</span>
             </button>
-            <button
-              role="tab"
-              aria-selected={activeTab === "panel-3"}
-              aria-controls="panel-3"
-              id="tab-3"
-              tabIndex="-1"
-              className="relative black h-10 px-6 tab rounded-full"
-              onClick={() => setActiveTab("panel-3")}
-            >
-              <span className="text-gray-300">Nothing</span>
-            </button>
           </div>
           <div className="mt-6">
             {activeTab === "panel-1" && (
@@ -78,11 +67,6 @@ function ConvertCarousel() {
             {activeTab === "panel-2" && (
               <div role="tabpanel" id="panel-2" className="tab-panel">
                 <ImageConverter />
-              </div>
-            )}
-            {activeTab === "panel-3" && (
-              <div role="tabpanel" id="panel-3" className="tab-panel">
-
               </div>
             )}
           </div>

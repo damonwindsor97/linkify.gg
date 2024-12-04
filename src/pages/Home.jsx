@@ -1,22 +1,25 @@
-import Showcase from "../components/Showcase"
+// import Showcase from "../components/Showcase"
+import Showcase2 from "../components/Showcase2"
 import Info from "../components/Info"
 import ConvertCarousel from "../components/ConvertCarousel"
 
 function Home() {
   return (
-    <div className="">
+    <div className="overflow-hidden">
         <div>
-            <Showcase/>
+            <Showcase2/>
         </div>
 
         <div className="flex flex-col space-y-8">
-            <div>
-                <Info/>
-            </div>
+
 
             <div>
                 <ConvertCarousel/>
             </div>
+
+            {/* <div>
+                <Info/>
+            </div> */}
         </div>
     </div>
   )
