@@ -6,6 +6,7 @@ import Down from './pages/Down'
 
 import './index.css'
 
+
 import PrivacyPolicy from './pages/PrivacyPolicy'
 
 import NotFound from './pages/NotFound'

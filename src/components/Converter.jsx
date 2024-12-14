@@ -54,7 +54,7 @@ function Converter() {
           convertSoundcloudToMp3(url);
           break;
         case 50:
-          convertSpotifyToMp3(url);
+          extractSpotifyPlaylist(url);
           break;
         default:
           alert('Please select a valid utility.');
@@ -164,10 +164,6 @@ function Converter() {
       }
     };
   
-
-  
-    const convertYoutubeToMp4 = async () => {
-    };
   
     const convertSoundcloudToMp3 = async () => {
       const soundCloudUrl = document.getElementById("linkInput").value;
@@ -217,7 +213,37 @@ function Converter() {
 
     };
 
-    const convertSpotifyToMp3 = async () => {
+    const extractSpotifyPlaylist = async () => {
+      const spotifyLink = document.getElementById('linkInput').value;
+
+      try {
+        setLoading(true);
+        setError(false);
+        setSuccess(false);
+        setSoundcloudUrl(false)
+        setTinyURL(null)
+        setYoutubeURL(null);
+        setErrorMessage(' ');
+
+        const response = await axios.post('https://dev-media-download-api.onrender.com/api/spotify/playlistInfo', {link: spotifyLink});
+
+        const fileData = response.data
+        const blob = new Blob([fileData], {type: 'text/plain'})
+        const url = URL.createObjectURL(blob)
+
+        const link = document.createElement('a');
+        link.download = "spotify-playlist.txt"
+        link.href = url;
+        link.click()
+
+        setSuccess(true);
+        setSoundcloudUrl(true)
+        setLoading(false);
+      } catch (error) {
+        setErrorMessage(error.message || 'An error occurred')
+        setLoading(false);
+        setError(true);
+      }
     };
   
     return (
@@ -227,8 +253,11 @@ function Converter() {
             {selectedUtility === 20 && " Rapid-API"}
             {selectedUtility === 30 && " Rapid-API"}
             {selectedUtility === 40 && " Linkify"}
+            {selectedUtility === 50 && " Linkify"}
             </p>
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your Link &gt; Select your Utility &gt; click "Convert"</p>
+          <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
+
 
           <div>
             <form onSubmit={handleSubmit}>
@@ -252,7 +281,7 @@ function Converter() {
                       <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
                       <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
                       <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
-                      <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
+                      <Option value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/>Spotify Playlist to .txt</Option>   
                     </div>
                   </Select>
                 </div>
