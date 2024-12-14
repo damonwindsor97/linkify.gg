@@ -225,7 +225,7 @@ function Converter() {
         setYoutubeURL(null);
         setErrorMessage(' ');
 
-        const response = await axios.post('http://localhost:5000/api/spotify/playlistInfo', {link: spotifyLink});
+        const response = await axios.post('https://dev-media-download-api.onrender.com/api/spotify/playlistInfo', {link: spotifyLink});
 
         const fileData = response.data
         const blob = new Blob([fileData], {type: 'text/plain'})
