@@ -4,6 +4,9 @@ import Layout from './components/Layout/Layout'
 import Home from './pages/Home'
 import Down from './pages/Down'
 
+import './index.css'
+
+
 import PrivacyPolicy from './pages/PrivacyPolicy'
 
 import NotFound from './pages/NotFound'

@@ -258,6 +258,7 @@ function Converter() {
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your Link &gt; Select your Utility &gt; click "Convert"</p>
           <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
 
+
           <div>
             <form onSubmit={handleSubmit}>
               <div className="flex m-4 text-white">
@@ -288,6 +289,7 @@ function Converter() {
               <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
                   {loading ? <BarLoader /> : "Convert"}
               </button>
+              
             </form>
 
           </div>
