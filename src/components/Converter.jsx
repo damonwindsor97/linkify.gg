@@ -23,6 +23,7 @@ function Converter() {
     const [soundcloudURL, setSoundcloudUrl] = useState(null)
     const [youtubeURL, setYoutubeURL] = useState(null)
 
+    const [toFormat, setToFormat] = useState('');
   
     const handleUrlChange = (e) => {
       setUrl(e.target.value);
@@ -45,16 +46,13 @@ function Converter() {
           shortenUrl(url);
           break;
         case 20:
-          convertYoutubeToMp3(url);
-          break;
-        case 30:
-          convertYoutubeToMp4(url);
+          convertYoutube(url);
           break;
         case 40:
           convertSoundcloudToMp3(url);
           break;
         case 50:
-          convertSpotifyToMp3(url);
+          extractSpotifyPlaylist(url)
           break;
         default:
           alert('Please select a valid utility.');
@@ -69,13 +67,10 @@ function Converter() {
       setSoundcloudUrl(null);
       setTinyURL(null);
       setYoutubeURL(null);
-    }
+      setToFormat('')
 
-    const extractYoutubeId = (url) => {
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
-    };
+
+    }
     
     const shortenUrl = async () => {
         const longURL = document.getElementById("linkInput").value;
@@ -118,53 +113,101 @@ function Converter() {
         }
     };
   
-    const convertYoutubeToMp3 = async () => {
+
+    const convertYoutube = async () => {
       const youtubeUrl = document.getElementById("linkInput").value;
-      
-      const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
-          ? extractYoutubeId(youtubeUrl) : youtubeUrl;
-
-      const options = {
-          method: 'GET',
-          url: 'https://youtube-mp36.p.rapidapi.com/dl',
-          params: { id: videoId }, 
-          headers: {
-              'x-rapidapi-key': import.meta.env.VITE_YOUTUBE_MP3_API_KEY,
-              'x-rapidapi-host': import.meta.env.VITE_YOUTUBE_MP3_API_HOST
-          }
-      };
-
-      try {
-        setLoading(true)
-        setError(false)
-        setSuccess(false)
-        setSoundcloudUrl(null)
-        setTinyURL(null)
-        setYoutubeURL(null);
-        setErrorMessage(' ');
-  
-        const response = await axios.request(options);
-        console.log(response);
-
-        const link = document.createElement('a');
-        link.href = response.data.link;
-        link.setAttribute('download', `${response.data.title}.m4a`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link)
-
-        setSuccess(true)
-        setLoading(false)
-        setYoutubeURL(null)
-      } catch (error) {
-        setLoading(false)
-        setError(true)
-        console.log(error)
+    
+      if (toFormat === "mp3") {
+        try {
+          setLoading(true);
+          setError(false);
+          setSuccess(false);
+          setSoundcloudUrl(null);
+          setTinyURL(null);
+          setYoutubeURL(null);
+          setErrorMessage(" ");
+          setToFormat("");
+    
+          const response = await fetch(
+            `https://dev-media-download-api.onrender.com/api/youtube/downloadMp3`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                link: youtubeUrl,
+              }),
+            }
+          );
+    
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+    
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "converted-audio.mp3");
+          document.body.appendChild(link);
+          link.click();
+    
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+    
+          setSuccess(true);
+          setLoading(false);
+          setYoutubeURL(null);
+        } catch (error) {
+          setLoading(false);
+          setError(true);
+          console.log(error);
+        }
+      } else if (toFormat === "mp4") {
+        try {
+          setLoading(true);
+          setError(false);
+          setSuccess(false);
+          setSoundcloudUrl(null);
+          setTinyURL(null);
+          setYoutubeURL(null);
+          setErrorMessage(" ");
+          setToFormat("");
+    
+          const response = await fetch(
+            `https://dev-media-download-api.onrender.com/api/youtube/downloadMp4`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                link: youtubeUrl,
+              }),
+            }
+          );
+    
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+    
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "converted-video.mp4");
+          document.body.appendChild(link);
+          link.click();
+    
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+    
+          setSuccess(true);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          setError(true);
+          console.log(error);
+        }
       }
     };
-  
-    const convertYoutubeToMp4 = async () => {
-    };
+
+
   
     const convertSoundcloudToMp3 = async () => {
       const soundCloudUrl = document.getElementById("linkInput").value;
@@ -177,6 +220,7 @@ function Converter() {
           setTinyURL(null)
           setYoutubeURL(null);
           setErrorMessage(' ');
+          setToFormat('')
 
           const response = await axios.post("https://media-download-api.onrender.com/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
               responseType: 'blob' 
@@ -199,7 +243,7 @@ function Converter() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute('download', `${title.data}.m4a`);
+          link.setAttribute('download', `${title.data}.${toFormat}`);
           document.body.appendChild(link);
           link.click();
 
@@ -214,23 +258,57 @@ function Converter() {
 
     };
 
-    const convertSpotifyToMp3 = async () => {
+
+    const extractSpotifyPlaylist = async () => {
+      const spotifyLink = document.getElementById('linkInput').value;
+
+      try {
+        setLoading(true);
+        setError(false);
+        setSuccess(false);
+        setSoundcloudUrl(false)
+        setTinyURL(null)
+        setYoutubeURL(null);
+        setErrorMessage(' ');
+        setToFormat('')
+
+        const response = await axios.post('https://media-download-api.onrender.com/api/spotify/playlistInfo', {link: spotifyLink});
+
+        const fileData = response.data
+        const blob = new Blob([fileData], {type: 'text/plain'})
+        const url = URL.createObjectURL(blob)
+
+        const link = document.createElement('a');
+        link.download = "spotify-playlist.txt"
+        link.href = url;
+        link.click()
+
+        setSuccess(true);
+        setSoundcloudUrl(true)
+        setLoading(false);
+      } catch (error) {
+        setErrorMessage(error.message || 'An error occurred')
+        setLoading(false);
+        setError(true);
+      }
     };
   
     return (
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
           <p className='absolute font-inter text-xs md:text-sm font-extralight text-white '>Powered By:
             {selectedUtility === 10 && " Linkify"}
-            {selectedUtility === 20 && " Rapid-API"}
-            {selectedUtility === 30 && " Rapid-API"}
+            {selectedUtility === 20 && " Linkify"}
             {selectedUtility === 40 && " Linkify"}
             </p>
-          <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Upload your image &gt; Select your options &gt; click "Convert"</p>
+
+          <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste Select your options &gt; click "Convert"</p>
           <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
+
 
           <div>
             <form onSubmit={handleSubmit}>
               <div className="flex m-4 text-white">
+                <p className='cursor-pointer p-1 m-1 rounded text-white items-center m-auto hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
                 <input 
                   className="m-auto w-full bg-[#404040] p-2 rounded-l-lg mr-2 focus:outline-none focus:outline-blue-500"
                   value={url}
@@ -247,14 +325,55 @@ function Converter() {
                   >
                     <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
                       <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
-                      <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP3</Option>   
-                      <Option disabled value={30} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube to MP4 </Option>   
-                      <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud to MP3</Option>   
-                      <Option disabled value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/> Spotify to MP3</Option>   
+
+                      <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube Converter</Option>   
+                      <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud Converter</Option>   
+                      <Option value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/>Spotify Playlist to .txt</Option>   
+
                     </div>
                   </Select>
                 </div>
               </div>
+                {selectedUtility == 20 && (
+                  <div className='flex'>
+                    <div className='flex m-auto items-center'>
+                      <p className='text-white text-sm md:text-xl m-1 '>Convert to</p>
+                      <Select 
+                        value={toFormat}
+                        onChange={(_, newValue) => setToFormat(newValue)}
+                        className="m-2 p-2 text-sm md:text-lg rounded border border-gray-400 hover:bg-stone-700 text-white"
+                        placeholder="Select Format"
+                      >
+                        <div className="absolute rounded bg-[#3D4A48] text-start md:text-base text-xs md:w-[250px] w-[100px] font-inter text-white shadow-md mt-1">
+                          <div className='grid grid-cols-2 justify-between '>
+                            <Option value="mp3" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">.mp3</Option>
+                            <Option value="mp4" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">.mp4</Option>
+                          </div>
+                        </div>
+                      </Select>
+                    </div>
+                  </div>
+                )}
+                {selectedUtility == 40 && (
+                  <div className='flex'>
+                    <div className='flex m-auto items-center'>
+                      <p className='text-white text-sm md:text-xl m-1 '>Convert to</p>
+                      <Select 
+                        value={toFormat}
+                        onChange={(_, newValue) => setToFormat(newValue)}
+                        className="m-2 p-2 text-sm md:text-lg rounded border border-gray-400 hover:bg-stone-700 text-white"
+                        placeholder="Select Format"
+                      >
+                        <div className="absolute rounded bg-[#3D4A48] text-start md:text-base text-xs md:w-[250px] w-[100px] font-inter text-white shadow-md mt-1">
+                          <div className='grid grid-cols-2 justify-between '>
+                            <Option value="mp3" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">.mp3</Option>
+                            <Option value="m4a" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">.m4a</Option>
+                          </div>
+                        </div>
+                      </Select>
+                    </div>
+                  </div>
+                )}
               <button type="submit" className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400' disabled={loading}>
                   {loading ? <BarLoader /> : "Convert"}
               </button>
@@ -262,9 +381,9 @@ function Converter() {
 
           </div>
 
-        {youtubeURL && (
+        {selectedUtility == 20 && (
           <div className="mt-2">
-            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 30 seconds, depending on quality & length.</p>
+            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 10 seconds, depending on length.</p>
           </div>
         )}
         {error && (
@@ -285,7 +404,7 @@ function Converter() {
         )}
         {selectedUtility === 40 && (
           <div className="">
-            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Soundcloud GO songs cannot be processed, it is being looked into.</p>
+            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Soundcloud GO songs can no longer be processed.</p>
           </div>
         )}
       </div>

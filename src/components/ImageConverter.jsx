@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';

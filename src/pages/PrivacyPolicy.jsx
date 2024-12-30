@@ -7,8 +7,8 @@ function PrivacyPolicy() {
             <p className="text-5xl font-bold text-white">Privacy Policy</p> 
 
             <ul className="md:m-12">
-                <li className="text-gray-300 m-6">1. <span className="font-bold text-lg underline decoration-cyan-300">Analytics:</span> We use Google Analytics to collect harmless data and analytics to check the following: Active Users, New Users, Active Users by Country, Views per Active Users & Average Engagement Time. This data helps us see whether users are responding well and happy with our services.</li>
-                <li className="text-gray-300 m-6">2. <span className="font-bold text-lg underline decoration-cyan-300">Data:</span> The only data that is stored within our database is the links in which a user enters into our URL Shortener, this is so that the API can determine whether it needs to create a new short URL for the user or retreive one from the database that already uses the original link.</li>
+                <li className="text-gray-300 m-6">1. <span className="font-bold text-lg underline decoration-cyan-300">Analytics:</span> We use Google Analytics to collect data and analytics to check the following: Active Users, New Users, Active Users by Country, Views per Active Users & Average Engagement Time. This data helps us see whether users are responding well and happy with our services.</li>
+                <li className="text-gray-300 m-6">2. <span className="font-bold text-lg underline decoration-cyan-300">Data:</span> The only data that is stored within our database is the links in which a user enters into our URL Shortener application, this is so that our API can determine whether it needs to create a new short URL for the user or retreive one from the database that already uses the original link.</li>
 
             </ul>
         </div>
