@@ -383,7 +383,7 @@ function Converter() {
 
         {selectedUtility == 20 && (
           <div className="mt-2">
-            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 10 seconds, depending on length.</p>
+            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 15 seconds, depending on length.</p>
           </div>
         )}
         {error && (
