@@ -23,7 +23,7 @@ const ImageConverter = () => {
   const handleFileChange = (e) => {
     // get the file that's been selected
     const selectedFile = e.target.files[0];
-    console.log(selectedFile)
+    // console.log(selectedFile)
 
     if (selectedFile) {
       // get the file type after image/
@@ -131,18 +131,18 @@ const ImageConverter = () => {
         return `${fileType} `
       })}</span></p>
       
-      <div className='flex justify-center items-center mb-4'>
+      <div className='md:flex justify-center items-center mb-4'>
         <input 
           type="file"
           onChange={handleFileChange}
-          className='md:file:p-2 md:file:text-lg text-sm md:m-2 file:hover:bg-stone-700 file:rounded file:border-gray-400 file:border-solid file:border-[1px] file:bg-main file:text-white file:cursor-pointer text-white'
+          className='file:p-2 md:file:text-lg text-sm md:m-2 file:hover:bg-stone-700 file:rounded file:border-gray-400 file:border-solid file:border-[1px] file:bg-main file:text-white file:cursor-pointer text-white'
           name="fileInput"
         />
         <p className='text-white text-sm md:text-base m-1 md:m-0'>Convert to</p>
         <Select 
           value={toFormat}
           onChange={(_, newValue) => setToFormat(newValue)}
-          className="md:m-1 md:p-2 text-sm md:text-base rounded border border-gray-400 hover:bg-stone-700 text-white"
+          className="m-1 p-2 text-sm md:text-base rounded border border-gray-400 hover:bg-stone-700 text-white"
           placeholder="Select Format"
         >
           <div className="absolute rounded bg-[#3D4A48] text-start md:text-base text-xs md:w-[250px] w-[100px] font-inter text-white shadow-md mt-1">
@@ -150,7 +150,7 @@ const ImageConverter = () => {
               <Option value="PNG" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">PNG</Option>   
               <Option value="JPG" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">JPG</Option>   
               <Option value="WEBP" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">WEBP</Option>   
-              {/* <Option value="ICO" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">ICO</Option>  */}
+              <Option value="ico" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">ICO</Option> 
             </div>
           </div>
         </Select>
@@ -160,7 +160,7 @@ const ImageConverter = () => {
       </div>
       
       {preview && (
-        <div className='w-[275px] border border-dashed mx-auto mb-4'>
+        <div className='md:w-[275px] w-[250px] border border-dashed mx-auto mb-4'>
           <img src={preview} alt="Preview" className=' max-w-full mx-auto object-contain' />
         </div>
       )}
