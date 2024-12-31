@@ -89,7 +89,7 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch(`https://mdapi.xyz/api/url/shorten`, {
+          const response = await fetch(`https://dev-media-download-api.onrender.com/api/url/shorten`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -178,7 +178,7 @@ function Converter() {
           setToFormat("");
     
           const response = await fetch(
-            `https://media-download-api.onrender.com/api/youtube/downloadMp4`,
+            `https://dev-media-download-api.onrender.com/api/youtube/downloadMp4`,
             {
               method: "POST",
               headers: {
@@ -190,12 +190,19 @@ function Converter() {
             }
           );
     
+
+          const contentDisposition = response.headers.get('Content-Disposition');
+
+          const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
+          const filename = filenameMatch ? filenameMatch[1] : 'converted-video.mp4';
+
           const blob = await response.blob();
           const url = window.URL.createObjectURL(blob);
-    
+
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "converted-video.mp4");
+          // Use the video title in the download
+          link.setAttribute("download", filename);
           document.body.appendChild(link);
           link.click();
     
@@ -301,9 +308,9 @@ function Converter() {
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
           <p className='absolute font-inter text-xs md:text-sm font-extralight text-white '>Powered By:
             {selectedUtility === 10 && " Linkify"}
-            {selectedUtility === 20 && toFormat === 'mp3' ? " Rapid-API" : " Linkify"}
+            {!selectedUtility || !toFormat ? "" : selectedUtility === 20 && toFormat === 'mp3' ? " Rapid-API" : " Linkify"}
             {selectedUtility === 40 && " Linkify"}
-            </p>
+          </p>
 
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste Select your options &gt; click "Convert"</p>
           <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
