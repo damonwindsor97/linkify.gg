@@ -89,7 +89,7 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch(`https://dev-media-download-api.onrender.com/api/url/shorten`, {
+          const response = await fetch(`https://mdapi.xyz/api/url/shorten`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
