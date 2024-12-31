@@ -71,6 +71,12 @@ function Converter() {
 
 
     }
+
+    const extractYoutubeId = (url) => {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    };
     
     const shortenUrl = async () => {
         const longURL = document.getElementById("linkInput").value;
@@ -118,48 +124,47 @@ function Converter() {
       const youtubeUrl = document.getElementById("linkInput").value;
     
       if (toFormat === "mp3") {
-        try {
-          setLoading(true);
-          setError(false);
-          setSuccess(false);
-          setSoundcloudUrl(null);
-          setTinyURL(null);
-          setYoutubeURL(null);
-          setErrorMessage(" ");
-          setToFormat("");
-    
-          const response = await fetch(
-            `https://dev-media-download-api.onrender.com/api/youtube/downloadMp3`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                link: youtubeUrl,
-              }),
+        const youtubeUrl = document.getElementById("linkInput").value;
+      
+        const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
+            ? extractYoutubeId(youtubeUrl) : youtubeUrl;
+  
+        const options = {
+            method: 'GET',
+            url: 'https://youtube-mp36.p.rapidapi.com/dl',
+            params: { id: videoId }, 
+            headers: {
+                'x-rapidapi-key': import.meta.env.VITE_YOUTUBE_MP3_API_KEY,
+                'x-rapidapi-host': import.meta.env.VITE_YOUTUBE_MP3_API_HOST
             }
-          );
+        };
+  
+        try {
+          setLoading(true)
+          setError(false)
+          setSuccess(false)
+          setSoundcloudUrl(null)
+          setTinyURL(null)
+          setYoutubeURL(null);
+          setErrorMessage(' ');
     
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-    
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "converted-audio.mp3");
+          const response = await axios.request(options);
+          console.log(response);
+  
+          const link = document.createElement('a');
+          link.href = response.data.link;
+          link.setAttribute('download', `${response.data.title}.m4a`);
           document.body.appendChild(link);
           link.click();
-    
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-    
-          setSuccess(true);
-          setLoading(false);
-          setYoutubeURL(null);
+          document.body.removeChild(link)
+  
+          setSuccess(true)
+          setLoading(false)
+          setYoutubeURL(null)
         } catch (error) {
-          setLoading(false);
-          setError(true);
-          console.log(error);
+          setLoading(false)
+          setError(true)
+          console.log(error)
         }
       } else if (toFormat === "mp4") {
         try {
@@ -173,7 +178,7 @@ function Converter() {
           setToFormat("");
     
           const response = await fetch(
-            `https://dev-media-download-api.onrender.com/api/youtube/downloadMp4`,
+            `http://localhost:5000/api/youtube/downloadMp4`,
             {
               method: "POST",
               headers: {
@@ -208,7 +213,6 @@ function Converter() {
     };
 
 
-  
     const convertSoundcloudToMp3 = async () => {
       const soundCloudUrl = document.getElementById("linkInput").value;
 
@@ -297,7 +301,7 @@ function Converter() {
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
           <p className='absolute font-inter text-xs md:text-sm font-extralight text-white '>Powered By:
             {selectedUtility === 10 && " Linkify"}
-            {selectedUtility === 20 && " Linkify"}
+            {selectedUtility === 20 && toFormat === 'mp3' ? " Rapid-API" : " Linkify"}
             {selectedUtility === 40 && " Linkify"}
             </p>
 
@@ -381,11 +385,11 @@ function Converter() {
 
           </div>
 
-        {selectedUtility == 20 && (
+        {selectedUtility === 20 && toFormat === 'mp4' ?
           <div className="mt-2">
-            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 15 seconds, depending on length.</p>
+            <p className="text-sm text-center font-italic text-yellow-500 font-inter">Conversion can take up to 20 seconds, depending on length.</p>
           </div>
-        )}
+        : "" }
         {error && (
             <div className=" mt-2">
               <p className="text-lg text-center font-bold text-red-400 font-inter">An Error occurred: {errorMessage}</p>
