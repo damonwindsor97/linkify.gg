@@ -122,6 +122,10 @@ function Converter() {
 
     const convertYoutube = async () => {
       const youtubeUrl = document.getElementById("linkInput").value;
+      if(!toFormat){
+        alert('Please enter a Format to convert to');
+        return;
+      }
     
       if (toFormat === "mp3") {
         const youtubeUrl = document.getElementById("linkInput").value;
@@ -222,7 +226,11 @@ function Converter() {
 
     const convertSoundcloudToMp3 = async () => {
       const soundCloudUrl = document.getElementById("linkInput").value;
-
+      if(!toFormat){
+        alert('Please enter a Format to convert to');
+        return;
+      }
+      
       try {
           setLoading(true);
           setError(false);
