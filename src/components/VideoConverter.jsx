@@ -8,8 +8,10 @@ import { BarLoader } from 'react-spinners';
 function VIdeoConverter() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState('');
+
   const [fromFormat, setFromFormat] = useState('');
   const [toFormat, setToFormat] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -37,7 +39,6 @@ function VIdeoConverter() {
 
       if(SupportedFileTypes.includes(fileType.toLowerCase())){
         setFile(selectedFile)
-        setPreview(URL.createObjectURL(selectedFile));
         setFromFormat(fileType)
         setError('')
       }
@@ -46,7 +47,6 @@ function VIdeoConverter() {
 
 
   const convertVideo = async () => {
-
 
     if (!file || !toFormat){
       setError("Please select a file and format.");
@@ -58,23 +58,43 @@ function VIdeoConverter() {
     setError('')
     setSuccess(false)
 
-    if (toFormat === "gif"){
-      try {
-        console.log('Thing happens')
-        
-        setSuccess(true);
-      } catch (error) {
-        console.log(error)
-      }
+    try {
+      const formData = new FormData();
+      formData.append('file', file)
 
-    } else {
+      console.log('calling api')
+      const response = await fetch(
+        `https://dev-media-download-api.onrender.com/api/video/tomp3`, {
+          method: 'POST',
+          body: formData
+        }
+      );
+      console.log('blob')
+      const blob = await response.blob();
 
-      try {
-        console.log('Thing happens')
-      } catch (error) {
-        console.log(error)
-      }
+      console.log('url')
+      const url = window.URL.createObjectURL(blob)
+
+      const link = document.createElement('a');
+      link.href = url;
+
+      console.log('name')
+      const fileName = file.name.replace(/\.[^/.]+$/, "") + ".mp3";
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click()
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url)
+
+      setSuccess(true)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false);
+      setError(true);
+      console.log(error)
     }
+  
   };
 
   return (
@@ -99,8 +119,7 @@ function VIdeoConverter() {
         >
           <div className="absolute rounded bg-[#3D4A48] text-start md:text-base text-xs md:w-[250px] w-[100px] font-inter text-white shadow-md mt-1">
             <div className='grid grid-cols-2 justify-between '>
-              <Option value="GIF" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">GIF</Option>   
-
+              <Option value="MP3" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">MP3</Option>
             </div>
           </div>
         </Select>
