@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Converter from "../components/Converter";
 import ImageConverter from "../components/ImageConverter";
-import VideoConverter from "./VIdeoConverter";
 import VideoConverter from "../components/VideoConverter";
 
 function ConvertCarousel() {
