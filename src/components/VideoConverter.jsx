@@ -17,7 +17,6 @@ function VIdeoConverter() {
   const [success, setSuccess] = useState(false);
 
 
-
   const resetState = () => {
     setFile(null);
     setPreview('');
@@ -47,13 +46,14 @@ function VIdeoConverter() {
 
 
   const convertVideo = async () => {
+    
 
     if (!file || !toFormat){
       setError("Please select a file and format.");
       alert("Please select a file and format.");
       return;
     }
-
+    console.log('file found')
     setLoading(true)
     setError('')
     setSuccess(false)
@@ -62,23 +62,22 @@ function VIdeoConverter() {
       const formData = new FormData();
       formData.append('file', file)
 
-      console.log('calling api')
+      console.log('calling API')
       const response = await fetch(
         `https://dev-media-download-api.onrender.com/api/video/tomp3`, {
           method: 'POST',
           body: formData
         }
       );
-      console.log('blob')
+
+      console.log('forming blob')
       const blob = await response.blob();
 
-      console.log('url')
       const url = window.URL.createObjectURL(blob)
 
       const link = document.createElement('a');
       link.href = url;
 
-      console.log('name')
       const fileName = file.name.replace(/\.[^/.]+$/, "") + ".mp3";
       link.setAttribute('download', fileName);
       document.body.appendChild(link);
