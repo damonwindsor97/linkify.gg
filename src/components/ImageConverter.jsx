@@ -61,6 +61,7 @@ const ImageConverter = () => {
     // Simple error handling to make sure there is a file and a format
     if (!file || !toFormat) {
       setError("Please select a file and format.");
+      alert("Please select a file and format.");
       return;
     }
 
