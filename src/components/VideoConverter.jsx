@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';
 import { GrPowerReset } from "react-icons/gr";
@@ -19,10 +19,12 @@ function VIdeoConverter() {
   const [progress, setProgress] =useState(0);
   const [progressMessage, setProgressMessage] = useState('')
 
-  useProgressSocket((data) => {
+  const handleProgress = useCallback((data) => {
     setProgress(data.percent)
     setProgressMessage(data.message)
-  })
+  }, [])
+
+  useProgressSocket(handleProgress)
 
 
   const resetState = () => {
