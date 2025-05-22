@@ -4,7 +4,7 @@ import ToolsPreview from '../assets/tools-preview.png'
 function Showcase2() {
   return (
     <div className="items-center justify-center font-inter md:h-[620px] h-[500px] relative">
-      <div className="md:flex mt-[100px] items-center justify-center h-full md:max-w-[1250px] mx-auto ">
+      <div className="md:flex mt-[100px] md:mt-[0px] items-center justify-center h-full md:max-w-[1250px] mx-auto ">
         <div className="md:w-[50%] text-center z-10 relative">
           <div>
             <p className='select-none text-7xl p-2 font-semibold bg-gradient-to-r from-cyan-300 to-blue-600 inline-block text-transparent bg-clip-text animate-text'>Linkify</p>

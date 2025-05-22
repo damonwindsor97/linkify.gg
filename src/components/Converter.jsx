@@ -321,8 +321,6 @@ function Converter() {
           </p>
 
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your link &gt; Select your options &gt; click "Convert"</p>
-          <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
-
 
           <div>
             <form onSubmit={handleSubmit}>
