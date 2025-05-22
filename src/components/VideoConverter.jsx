@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';
 import { GrPowerReset } from "react-icons/gr";
@@ -160,7 +160,7 @@ function VIdeoConverter() {
       </button>
 
           <div className=" mt-2">
-            <p className="text-lg text-center text-yellow-400 font-inter">Servers Initial Response time may be slow, apologies in advance</p>
+            <p className="text-sm md:text-lg text-center text-yellow-400 font-inter">Servers Initial Response will be slow, looking into other hosts.</p>
           </div>
 
       {error && (
