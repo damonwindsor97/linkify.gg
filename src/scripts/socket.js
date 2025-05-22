@@ -5,4 +5,5 @@ export const socket = io('https://dev-media-download-api.onrender.com', {
     transports: ['websocket'],
     autoConnect: true,
     secure: true,
+    upgrade: false
 });

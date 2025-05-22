@@ -5,7 +5,7 @@ const useProgressSocket = (onProgress) => {
     useEffect(() => {
     console.log('Attempting socket connection...');
 
-    socket.on('connect', () => {
+    socket.on('connected', () => {
         console.log('[SOCKET] Connected! ID:', socket.id);
     });
 
@@ -24,7 +24,7 @@ const useProgressSocket = (onProgress) => {
 
     return () => {
         console.log('Cleaning up socket listeners');
-        socket.off('connect');
+        socket.off('connected');
         socket.off('connect_error');
         socket.off('disconnect');
         socket.off('progress');
