@@ -3,12 +3,14 @@ import { socket } from './socket';
 
 const useProgressSocket = (onProgress) => {
   useEffect(() => {
+    console.log('Attempting socket connection...');
+
     socket.on('connect', () => {
-      console.log('Connected to socket server');
+      console.log('Socket connected:', socket.id);
     });
 
     socket.on('progress', (data) => {
-      console.log('Progress received:', data);
+      console.log('Progress update:', data);
       onProgress(data);
     });
 
