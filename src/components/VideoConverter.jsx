@@ -159,6 +159,10 @@ function VIdeoConverter() {
         {loading ? <BarLoader /> : 'Convert'}
       </button>
 
+          <div className=" mt-2">
+            <p className="text-lg text-center text-yellow-400 font-inter">Servers Initial Response time may be slow, apologies in advance</p>
+          </div>
+
       {error && (
             <div className=" mt-2">
               <p className="text-lg text-center font-bold text-red-400 font-inter">An Error occurred: {error}</p>
