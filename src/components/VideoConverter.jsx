@@ -34,6 +34,7 @@ function VIdeoConverter() {
     setToFormat('');
     setError('');
     setSuccess(false);
+    setProgress(0)
   };
 
   const SupportedFileTypes = [
@@ -73,6 +74,7 @@ function VIdeoConverter() {
     setLoading(true)
     setError('')
     setSuccess(false)
+    setProgress(0)
 
     try {
       const formData = new FormData();
