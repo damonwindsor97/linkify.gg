@@ -116,8 +116,7 @@ const ImageConverter = () => {
   
       setSuccess(true);
     } catch (error) {
-      console.error('Conversion failed:', error);
-      setError('Conversion failed. Please try again.');
+      setError(error);
     } finally {
       setLoading(false);
     }

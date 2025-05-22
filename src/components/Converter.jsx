@@ -112,7 +112,6 @@ function Converter() {
           }
         } catch (error) {
           console.error("Error:", error);
-          setErrorMessage(error.message || 'An error occured')
           setLoading(false);
           setError(error);
           setSuccess(false)
@@ -167,8 +166,7 @@ function Converter() {
           setYoutubeURL(null)
         } catch (error) {
           setLoading(false)
-          setError(true)
-          console.log(error)
+          setError(error)
         }
       } else if (toFormat === "mp4") {
         try {
@@ -217,8 +215,7 @@ function Converter() {
           setLoading(false);
         } catch (error) {
           setLoading(false);
-          setError(true);
-          console.log(error);
+          setError(error);
         }
       }
     };
@@ -308,7 +305,7 @@ function Converter() {
       } catch (error) {
         setErrorMessage(error.message || 'An error occurred')
         setLoading(false);
-        setError(true);
+        setError(error);
       }
     };
   
@@ -321,8 +318,6 @@ function Converter() {
           </p>
 
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your link &gt; Select your options &gt; click "Convert"</p>
-          <p className='absolute right-0 top-0 cursor-pointer p-1 rounded text-white hover:bg-gray-600 active:bg-gray-700' onClick={resetState}><GrPowerReset/></p>
-
 
           <div>
             <form onSubmit={handleSubmit}>

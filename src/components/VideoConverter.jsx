@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';
 import { GrPowerReset } from "react-icons/gr";
 import { BarLoader } from 'react-spinners';
 
+import useProgressSocket from '../scripts/progressListener';
 
 function VIdeoConverter() {
   const [file, setFile] = useState(null);
@@ -15,6 +16,15 @@ function VIdeoConverter() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [progress, setProgress] =useState(0);
+  const [progressMessage, setProgressMessage] = useState('')
+
+  const handleProgress = useCallback((data) => {
+    setProgress(data.percent)
+    setProgressMessage(data.message)
+  }, [])
+
+  useProgressSocket(handleProgress)
 
 
   const resetState = () => {
@@ -24,6 +34,7 @@ function VIdeoConverter() {
     setToFormat('');
     setError('');
     setSuccess(false);
+    setProgress(0)
   };
 
   const SupportedFileTypes = [
@@ -53,10 +64,17 @@ function VIdeoConverter() {
       alert("Please select a file and format.");
       return;
     }
-    console.log('file found')
+    // measured in bytes
+    if(file.size > 209715200){
+      setError("No files over 200MB")
+      return
+    }
+
+    console.log('file found: ', file.size)
     setLoading(true)
     setError('')
     setSuccess(false)
+    setProgress(0)
 
     try {
       const formData = new FormData();
@@ -64,7 +82,7 @@ function VIdeoConverter() {
 
       console.log('calling API')
       const response = await fetch(
-        `https://dev-media-download-api.onrender.com/api/v1/video/tomp3`, {
+        `https://media-download-api.onrender.com/api/v1/video/tomp3`, {
           method: 'POST',
           body: formData
         }
@@ -90,7 +108,7 @@ function VIdeoConverter() {
       setLoading(false)
     } catch (error) {
       setLoading(false);
-      setError(true);
+      setError(error);
       console.log(error)
     }
   
@@ -141,6 +159,10 @@ function VIdeoConverter() {
         {loading ? <BarLoader /> : 'Convert'}
       </button>
 
+          <div className=" mt-2">
+            <p className="text-sm md:text-lg text-center text-yellow-400 font-inter">Servers Initial Response will be slow, looking into other hosts.</p>
+          </div>
+
       {error && (
             <div className=" mt-2">
               <p className="text-lg text-center font-bold text-red-400 font-inter">An Error occurred: {error}</p>
@@ -151,6 +173,11 @@ function VIdeoConverter() {
             <p className="text-xl text-center font-bold text-green-400 font-inter">Successfully Converted.</p>
           </div>
       )}
+      {loading && progress ? (
+          <div className=" mt-2">
+            <p className="text-xl text-center font-bold text-green-400 font-inter">{progressMessage} - {progress}%</p>
+          </div>
+      ) : ''}
     </div>
   )
 }
