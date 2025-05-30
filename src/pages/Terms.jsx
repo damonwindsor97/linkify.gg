@@ -1,8 +1,12 @@
-
+import { Helmet } from "react-helmet"
 
 function Terms() {
   return (
 <div className="flex justify-center items-center min-h-[70vh] px-4">
+      <Helmet>
+        <title>Terms of Service</title>
+        <description>Terms of Service & Fair Use for Linkify.gg</description>
+      </Helmet>
   <div className="text-center max-w-4xl">
     <p className="text-5xl font-bold text-white">Terms of Service / Fair Use</p>
 
