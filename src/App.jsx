@@ -8,6 +8,7 @@ import './index.css'
 
 
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import Terms from './pages/Terms'
 
 import NotFound from './pages/NotFound'
 
@@ -16,10 +17,11 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout/>}>
-        <Route index path="/" element={<Home/>}/>
-        <Route path="/privacypolicy" element={<PrivacyPolicy/>}/>
+        <Route index path="/" element={<Home/>} />
+        <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
+        <Route path="/terms" element={<Terms/>} />
 
-        <Route path="*" element={<NotFound/>}/>
+        <Route path="*" element={<NotFound/>} />
       </Route>
     </Routes>
   )

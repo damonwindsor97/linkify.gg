@@ -14,6 +14,7 @@ function Footer() {
         <div>
           <ul>
             <Link to="/privacypolicy"><li className="text-gray-300 cursor-pointer hover:text-white">Privacy Policy</li></Link>
+            <Link to="/terms"><li className="text-gray-300 cursor-pointer hover:text-white">Terms of Service</li></Link>
             <Link to="https://discord.gg/9ytVAPNtmz"><li className="text-gray-300 cursor-pointer hover:text-white">Support</li></Link>
           </ul>
         </div>
