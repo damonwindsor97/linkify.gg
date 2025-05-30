@@ -5,7 +5,8 @@ function PrivacyPolicy() {
     <div className="text-center">
       <Helmet>
         <title>Privacy Policy</title>
-        <description>Privacy Policy for Linkify.gg</description>
+        <description>Privacy Policy for Linkify.gg | Convert MP4, YouTube & Soundcloud to Mp3 and more with `Linkify`.</description>
+        <keywords>link, url, shorten, utilities, oasis, youtube, to, mp3, convert, YouTube, YT, MP3, audio, YouTube, link oasis, utils for links, utilities for links, linkify.gg, linkify, free online, converter, free, online, free online converter, tools, tool, spotify download, Spotify, Soundcloud, download, downloader, image convert, jpg, png, gif, icon, ico, privacy, policy, privacy policy, terms of service, tos, terms, of, service</keywords>
       </Helmet>
         <div className="mt-[200px] md:mt-[250px] max-w-[920px] m-auto">
             <p className="text-5xl font-bold text-white">Privacy Policy</p> 
