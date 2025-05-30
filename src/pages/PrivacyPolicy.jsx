@@ -1,8 +1,12 @@
-
+import {Helmet} from "react-helmet";
 
 function PrivacyPolicy() {
   return (
     <div className="text-center">
+      <Helmet>
+        <title>Privacy Policy</title>
+        <description>Privacy Policy for Linkify.gg</description>
+      </Helmet>
         <div className="mt-[200px] md:mt-[250px] max-w-[920px] m-auto">
             <p className="text-5xl font-bold text-white">Privacy Policy</p> 
 
