@@ -1,13 +1,8 @@
-import { Helmet } from "react-helmet"
+
 
 function Terms() {
   return (
 <div className="flex justify-center items-center min-h-[70vh] px-4">
-      <Helmet>
-        <title>Terms of Service</title>
-        <description>Terms of Service & Fair Use for Linkify.gg | Convert MP4, YouTube & Soundcloud to Mp3 and more with `Linkify`.</description>
-        <keywords>link, url, shorten, utilities, oasis, youtube, to, mp3, convert, YouTube, YT, MP3, audio, YouTube, link oasis, utils for links, utilities for links, linkify.gg, linkify, free online, converter, free, online, free online converter, tools, tool, spotify download, Spotify, Soundcloud, download, downloader, image convert, jpg, png, gif, icon, ico, privacy, policy, privacy policy, terms of service, tos, terms, of, service</keywords>
-      </Helmet>
   <div className="text-center max-w-4xl">
     <p className="text-5xl font-bold text-white">Terms of Service / Fair Use</p>
 
