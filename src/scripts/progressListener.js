@@ -9,10 +9,6 @@ const useProgressSocket = (onProgress) => {
         console.log('[SOCKET] Connected! ID:', socket.id);
     });
 
-    socket.on('connect_error', (err) => {
-        console.error('[SOCKET] Connection error:', err.message);
-    });
-
     socket.on('disconnect', (reason) => {
         console.warn('[SOCKET] Disconnected. Reason:', reason);
     });
@@ -25,7 +21,6 @@ const useProgressSocket = (onProgress) => {
     return () => {
         console.log('Cleaning up socket listeners');
         socket.off('connected');
-        socket.off('connect_error');
         socket.off('disconnect');
         socket.off('progress');
     };

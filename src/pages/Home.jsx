@@ -4,20 +4,12 @@ import ConvertCarousel from "../components/ConvertCarousel"
 
 function Home() {
   return (
-    <div className="overflow-hidden">
-        <div>
-            <Showcase2/>
-        </div>
+    <div  className="">
 
-        <div className="flex flex-col space-y-8">
+      <div className="mt-[22vh]">
+        <ConvertCarousel/>
+      </div>
 
-
-            <div>
-                <ConvertCarousel/>
-            </div>
-
-
-        </div>
     </div>
   )
 }

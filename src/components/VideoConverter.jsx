@@ -82,7 +82,7 @@ function VIdeoConverter() {
 
       console.log('calling API')
       const response = await fetch(
-        `https://dev-media-download-api.onrender.com/api/v1/video/tomp3`, {
+        `https://media-download-api.onrender.com/api/v1/video/tomp3`, {
           method: 'POST',
           body: formData
         }
