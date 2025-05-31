@@ -5,7 +5,6 @@ import { useState } from 'react';
 function DocConverter() {
       const [file, setFile] = useState(null);
       const [preview, setPreview] = useState('');
-      const [fromFormat, setFromFormat] = useState('');
       const [toFormat, setToFormat] = useState('');
       const [loading, setLoading] = useState(false);
       const [error, setError] = useState('');

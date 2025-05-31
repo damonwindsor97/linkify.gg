@@ -13,6 +13,7 @@ function VIdeoConverter() {
   const [fromFormat, setFromFormat] = useState('');
   const [toFormat, setToFormat] = useState('');
 
+  const [responseLoading, setsResponseLoading] = useState(false)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -71,6 +72,7 @@ function VIdeoConverter() {
     }
 
     console.log('file found: ', file.size)
+    setsResponseLoading(true)
     setLoading(true)
     setError('')
     setSuccess(false)
@@ -87,6 +89,7 @@ function VIdeoConverter() {
           body: formData
         }
       );
+      setsResponseLoading(false)
 
       console.log('forming blob')
       const blob = await response.blob();
@@ -160,7 +163,7 @@ function VIdeoConverter() {
       </button>
 
           <div className=" mt-2">
-            <p className="text-sm md:text-lg text-center text-yellow-400 font-inter">Servers Initial Response will be slow, looking into other hosts.</p>
+            <p className="text-sm md:text-lg text-center text-yellow-400 font-inter"></p>
           </div>
 
       {error && (
@@ -171,6 +174,11 @@ function VIdeoConverter() {
       {success && (
           <div className=" mt-2">
             <p className="text-xl text-center font-bold text-green-400 font-inter">Successfully Converted.</p>
+          </div>
+      )}
+      {responseLoading && !progress && (
+          <div className=" mt-2">
+            <p className="text-xl text-center font-bold text-green-400 font-inter">Starting request, please wait</p>
           </div>
       )}
       {loading && progress ? (
