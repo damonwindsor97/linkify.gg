@@ -326,7 +326,7 @@ function Converter() {
         setErrorMessage(' ');
         setToFormat('')
         
-        const mdaResponse = await axios.post('https://dev-media-download-api.onrender.com/api/v1/spotify/downloadMp3', {link: spotifyLink})
+        const mdaResponse = await axios.post('https://media-download-api.onrender.com/api/v1/spotify/downloadMp3', {link: spotifyLink})
         const videoId = mdaResponse.data;
 
         const options = {
