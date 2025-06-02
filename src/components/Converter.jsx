@@ -362,9 +362,8 @@ function Converter() {
     return (
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
           <p className='absolute font-inter text-xs md:text-sm font-extralight text-white '>Powered By:
-            {selectedUtility === 10 && " Linkify"}
+            {( selectedUtility === 10 || selectedUtility === 40 || selectedUtility === 50 || selectedUtility === 60 ) && " Linkify"}
             {!selectedUtility || !toFormat ? "" : selectedUtility === 20 && toFormat === 'mp3' ? " Rapid-API" : " Linkify"}
-            {selectedUtility === 40 && " Linkify"}
           </p>
 
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your link &gt; Select your options &gt; click "Convert"</p>
