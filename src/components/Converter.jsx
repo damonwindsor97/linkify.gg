@@ -54,6 +54,9 @@ function Converter() {
         case 50:
           extractSpotifyPlaylist(url)
           break;
+        case 60:
+          spotifyDownload(url)
+          break
         default:
           alert('Please select a valid utility.');
       }
@@ -308,13 +311,59 @@ function Converter() {
         setError(error);
       }
     };
+
+    const spotifyDownload = async () => {
+      const spotifyLink = document.getElementById('linkInput').value;
+
+      
+      try {
+        setLoading(true);
+        setError(false);
+        setSuccess(false);
+        setSoundcloudUrl(false)
+        setTinyURL(null)
+        setYoutubeURL(null);
+        setErrorMessage(' ');
+        setToFormat('')
+        
+        const mdaResponse = await axios.post('https://media-download-api.onrender.com/api/v1/spotify/downloadMp3', {link: spotifyLink})
+        const videoId = mdaResponse.data;
+
+        const options = {
+            method: 'GET',
+            url: 'https://youtube-mp36.p.rapidapi.com/dl',
+            params: { id: videoId }, 
+            headers: {
+                'x-rapidapi-key': import.meta.env.VITE_YOUTUBE_MP3_API_KEY,
+                'x-rapidapi-host': import.meta.env.VITE_YOUTUBE_MP3_API_HOST
+            }
+        };
+        
+          const response = await axios.request(options);
+          console.log(response);
+  
+          const link = document.createElement('a');
+          link.href = response.data.link;
+          link.setAttribute('download', `${response.data.title}.m4a`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link)
+  
+          setSuccess(true)
+          setLoading(false)
+          setYoutubeURL(null)
+
+      } catch (error) {
+          setLoading(false)
+          setError(error)
+      }
+    }
   
     return (
         <div className={"max-w-[1000px] m-auto bg-main rounded-lg text-center p-8" + (success ? ' border border-green-400' : "")}>
           <p className='absolute font-inter text-xs md:text-sm font-extralight text-white '>Powered By:
-            {selectedUtility === 10 && " Linkify"}
+            {( selectedUtility === 10 || selectedUtility === 40 || selectedUtility === 50 || selectedUtility === 60 ) && " Linkify"}
             {!selectedUtility || !toFormat ? "" : selectedUtility === 20 && toFormat === 'mp3' ? " Rapid-API" : " Linkify"}
-            {selectedUtility === 40 && " Linkify"}
           </p>
 
           <p className="font-inter text-white mb-4 mt-4 md:mt-0 text-sm md:text-base">Paste your link &gt; Select your options &gt; click "Convert"</p>
@@ -338,11 +387,12 @@ function Converter() {
                     onChange={handleUtilityChange}
                   >
                     <div className="absolute rounded-b-lg bg-[#3D4A48] text-start md:text-base text-xs md:w-[300px] font-inter text-white shadow-md mt-1">
-                      <Option value={10} className="p-3 border-b hover:brightness-75 cursor-pointer">URL Shortener</Option>   
+                      <Option value={10} className="p-3 hover:brightness-75 cursor-pointer">URL Shortener</Option>   
 
-                      <Option value={20} className="p-3 border-b flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube Converter</Option>   
-                      <Option value={40} className="p-3 border-b flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud Converter</Option>   
-                      <Option value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/>Spotify Playlist to .txt</Option>   
+                      <Option value={20} className="p-3 flex items-center bg-gradient-to-r from-red-700 to-red-900 hover:brightness-75 cursor-pointer"><img src={YouTubeLogo} className='h-6 mr-2 md:block hidden'/> YouTube Converter</Option>   
+                      <Option value={40} className="p-3 flex items-center bg-gradient-to-r from-orange-700 to-orange-900 hover:brightness-75 cursor-pointer"><img src={SoundcloudLogo} className='h-3 mr-2 md:block hidden'/> Soundcloud Converter</Option>   
+                      <Option value={50} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/>Spotify Playlist to .txt</Option>   
+                      <Option value={60} className="p-3 flex items-center bg-gradient-to-r from-green-700 to-green-900 rounded-b-lg hover:brightness-75 cursor-pointer"><img src={SpotifyLogo} className='h-6 mr-2 md:block hidden'/>Spotify track to mp3</Option>   
 
                     </div>
                   </Select>
