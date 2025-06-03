@@ -33,7 +33,7 @@ function Updates() {
                         <p className="font-bold text-xl lg:text-3xl lg:mb-2 font-roboto">{update.title}</p>
 
                         <div className="flex space-x-8">
-                            <p className="font-extralight text-sm">{update.date} AEST</p>
+                            <p className="font-extralight text-sm">{update.date} UTC</p>
                             <p className="font-extralight text-sm border p-1 rounded-lg bg-gray-900">{update.author}</p>
                         </div>
 
