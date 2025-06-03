@@ -11,6 +11,7 @@ function Navbar() {
 
             <div className='text-white font-inter font-semibold'>
                 <ul className='flex'>
+                    <Link to="/updates"><li className='p-2 m-2 hover:bg-slate-700 rounded cursor-pointer ease-in-out duration-300'>Updates</li></Link>
                     <Link to="https://discord.gg/9ytVAPNtmz"><li className='p-2 m-2 hover:bg-slate-700 rounded cursor-pointer ease-in-out duration-300'>Support</li></Link>
                 </ul>
             </div>

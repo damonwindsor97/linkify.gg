@@ -2,8 +2,8 @@
 
 function PrivacyPolicy() {
   return (
-    <div className="text-center">
-        <div className="mt-[200px] md:mt-[250px] max-w-[920px] m-auto">
+<div className="flex justify-center items-center min-h-[70vh] px-4">
+  <div className="text-center max-w-4xl">
             <p className="text-5xl font-bold text-white">Privacy Policy</p> 
 
             <ul className="md:m-12">
