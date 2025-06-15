@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import LinkifyLogo from '../../assets/linkify-logo-white.png'
 
 function Navbar() {
   return (

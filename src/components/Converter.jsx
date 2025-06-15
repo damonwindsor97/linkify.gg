@@ -354,8 +354,9 @@ function Converter() {
           setYoutubeURL(null)
 
       } catch (error) {
-          setLoading(false)
-          setError(error)
+        setLoading(false)
+        setError(error.response.data)
+        setErrorMessage(error.response.data)
       }
     }
   

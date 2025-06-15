@@ -12,20 +12,7 @@ export default {
       },
 
       keyframes: {
-        blob: {
-          "0%": {
-            transform: "scale(1) translate(-10%, -50%)"
-          },
-          "33%": {
-            transform: " scale(1.1) translate(-10%, -50%)"
-          },
-          "66%": {
-            transform: "scale(0.9) translate(-10%, -50%)"
-          },
-          "100%": {
-            transform: "scale(1) translate(-10%, -50%)"
-          }
-        },
+
         text: {
           '0%, 100%': {
             'background-size':'200% 200%',
@@ -38,7 +25,6 @@ export default {
       },
       },
       animation: {
-        blob:  "blob 15s infinite",
         text: 'text 5s ease infinite',
       },
       colors: {
