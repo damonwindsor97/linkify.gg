@@ -11,12 +11,13 @@ function Footer() {
           </div>
           <Link to="https://www.buymeacoffee.com/sweg"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" className="h-8" /></Link>
         </div>
+
         <div>
           <ul>
-            <Link to="/updates"><li className="text-gray-300 cursor-pointer hover:text-white">Updates</li></Link>
+            <Link to="/status"><li className="text-gray-300 cursor-pointer hover:text-white">Tool Status</li></Link>
             <Link to="/privacypolicy"><li className="text-gray-300 cursor-pointer hover:text-white">Privacy Policy</li></Link>
             <Link to="/terms"><li className="text-gray-300 cursor-pointer hover:text-white">Terms of Service</li></Link>
-            <Link to="https://discord.gg/9ytVAPNtmz"><li className="text-gray-300 cursor-pointer hover:text-white">Support</li></Link>
+            <Link to="https://discord.gg/9ytVAPNtmz"><li className="text-gray-300 cursor-pointer hover:text-white">Support & Updates</li></Link>
           </ul>
         </div>
       </div>

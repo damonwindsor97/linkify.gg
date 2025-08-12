@@ -8,7 +8,7 @@ import Down from './pages/Down'
 
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Terms from './pages/Terms'
-import Updates from './pages/Updates'
+import StatusPage from './pages/Status'
 
 import NotFound from './pages/NotFound'
 
@@ -20,7 +20,7 @@ function App() {
         <Route index path="/" element={<Home/>} />
         <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
         <Route path="/terms" element={<Terms/>} />
-        <Route path="/updates" element={<Updates/>} />
+        <Route path="/status" element={<StatusPage/>} />
 
         <Route path="*" element={<NotFound/>} />
       </Route>

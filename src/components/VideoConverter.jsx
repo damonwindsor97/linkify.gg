@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
+import axios from 'axios';
+
 import { Select } from '@mui/base/Select';
 import { Option } from '@mui/base/Option';
 import { GrPowerReset } from "react-icons/gr";
 import { BarLoader } from 'react-spinners';
 
-import useProgressSocket from '../scripts/progressListener';
 
 function VIdeoConverter() {
   const [file, setFile] = useState(null);
@@ -13,19 +14,12 @@ function VIdeoConverter() {
   const [fromFormat, setFromFormat] = useState('');
   const [toFormat, setToFormat] = useState('');
 
-  const [responseLoading, setsResponseLoading] = useState(false)
   const [loading, setLoading] = useState(false);
+  const [progressMessage, setProgressMessage] = useState('')
+  const [uploadProgess, setUploadProgress] = useState(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [progress, setProgress] =useState(0);
-  const [progressMessage, setProgressMessage] = useState('')
 
-  const handleProgress = useCallback((data) => {
-    setProgress(data.percent)
-    setProgressMessage(data.message)
-  }, [])
-
-  useProgressSocket(handleProgress)
 
 
   const resetState = () => {
@@ -35,7 +29,6 @@ function VIdeoConverter() {
     setToFormat('');
     setError('');
     setSuccess(false);
-    setProgress(0)
   };
 
   const SupportedFileTypes = [
@@ -44,7 +37,7 @@ function VIdeoConverter() {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
-
+    console.log('selected file: ', selectedFile.name)
     if(selectedFile){
       const fileType = selectedFile.type.split('/')[1];
 
@@ -58,63 +51,86 @@ function VIdeoConverter() {
 
 
   const convertVideo = async () => {
-    
-
-    if (!file || !toFormat){
+    if (!file || !toFormat) {
       setError("Please select a file and format.");
-      alert("Please select a file and format.");
       return;
     }
-    // measured in bytes
-    if(file.size > 209715200){
-      setError("No files over 200MB")
-      return
+
+    if (file.size > 509715200) {
+      setError("No files over 500MBW");
+      return;
     }
 
-    console.log('file found: ', file.size)
-    setsResponseLoading(true)
-    setLoading(true)
-    setError('')
-    setSuccess(false)
-    setProgress(0)
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+    setUploadProgress(0);
+    setProgressMessage("Uploading to S3...");
 
     try {
-      const formData = new FormData();
-      formData.append('file', file)
-
-      console.log('calling API')
-      const response = await fetch(
-        `https://media-download-api.onrender.com/api/v1/video/tomp3`, {
-          method: 'POST',
-          body: formData
+      const { data } = await axios.get(`${import.meta.env.VITE_API_ENDPOINT}/server/genSignedUrl`, {
+        params: {
+          filename: file.name,
+          contentType: file.type
         }
-      );
-      setsResponseLoading(false)
+      });
 
-      console.log('forming blob')
-      const blob = await response.blob();
+      const { url, key } = data;
 
-      const url = window.URL.createObjectURL(blob)
+      await axios.put(url, file, {
+        headers: {
+          'Content-Type': file.type
+        },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percent);
+          setProgressMessage(`Uploading...`);
+        }
+      });
 
-      const link = document.createElement('a');
-      link.href = url;
+      setProgressMessage("Upload complete. Waiting for server to start conversion...");
 
-      const fileName = file.name.replace(/\.[^/.]+$/, "") + ".mp3";
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click()
+      const urlResponse = await axios.get(`${import.meta.env.VITE_API_ENDPOINT}/server/downloadSignedUrl`, {
+        params: {
+          key: key,
+          mode: 'download'
+        }
+      });
 
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url)
+      const downloadUrl = urlResponse.data.url;
 
-      setSuccess(true)
-      setLoading(false)
-    } catch (error) {
+      const downloadResponse = await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/video/tomp3`, {
+        url: downloadUrl,
+        key: key,
+        filename: file.name 
+      },
+      {responseType: 'blob', withCredentials: true})
+
+      const blob = new Blob([downloadResponse.data], { type: 'audio/mpeg' });
+      const downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(blob); 
+      downloadLink.setAttribute('download', `${file.name}.mp3`);;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      try {
+        await axios.delete(`${import.meta.env.VITE_API_ENDPOINT}/server/deleteS3Object`, {
+          params: {
+            key: key,
+          }
+        }, { withCredentials: true });
+
+      } catch (error) {
+        console.log('Error deleting object from S3: ')
+      }
+      setSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Something went wrong');
+    } finally {
       setLoading(false);
-      setError(error);
-      console.log(error)
     }
-  
   };
 
   return (
@@ -154,17 +170,13 @@ function VIdeoConverter() {
         </div>
       )}
 
-      <button 
-        onClick={convertVideo} 
-        disabled={loading}
-        className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400'
-      >
+      <button onClick={convertVideo} disabled={loading}className='p-2 w-full bg-sky-800 rounded text-white hover:bg-sky-600 active:bg-sky-700 disabled:bg-gray-400'>
         {loading ? <BarLoader /> : 'Convert'}
       </button>
 
-          <div className=" mt-2">
-            <p className="text-sm md:text-lg text-center text-yellow-400 font-inter"></p>
-          </div>
+        <div className=" mt-2">
+          <p className="text-sm md:text-lg text-center text-yellow-400 font-inter"></p>
+        </div>
 
       {error && (
             <div className=" mt-2">
@@ -176,16 +188,14 @@ function VIdeoConverter() {
             <p className="text-xl text-center font-bold text-green-400 font-inter">Successfully Converted.</p>
           </div>
       )}
-      {responseLoading && !progress && (
-          <div className=" mt-2">
-            <p className="text-xl text-center font-bold text-green-400 font-inter">Starting request, please wait</p>
-          </div>
+      {loading && (
+        <div className="mt-2">
+          <p className="text-md text-center font-inter text-white">{progressMessage}</p>
+          {uploadProgess > 0 && uploadProgess < 100 && (
+            <p className="text-xl text-center font-bold text-green-400 font-inter">{uploadProgess}%</p>
+          )}
+        </div>
       )}
-      {loading && progress ? (
-          <div className=" mt-2">
-            <p className="text-xl text-center font-bold text-green-400 font-inter">{progressMessage} - {progress}%</p>
-          </div>
-      ) : ''}
     </div>
   )
 }

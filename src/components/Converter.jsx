@@ -92,12 +92,13 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(' ')
     
-          const response = await fetch(`https://mdapi.xyz/api/v1/url/shorten`, {
+          const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/url/shorten`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({
               url: longURL,
             })
@@ -130,7 +131,6 @@ function Converter() {
       }
     
       if (toFormat === "mp3") {
-        const youtubeUrl = document.getElementById("linkInput").value;
       
         const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
             ? extractYoutubeId(youtubeUrl) : youtubeUrl;
@@ -153,9 +153,21 @@ function Converter() {
           setTinyURL(null)
           setYoutubeURL(null);
           setErrorMessage(' ');
+
+          let response;
+          const maxAttempts = 10;
+          const pollInterval = 3000;
     
-          const response = await axios.request(options);
-          console.log(response);
+          for (let attempt = 0; attempt < maxAttempts; attempt++){
+            response = await axios.request(options);
+            if (response.data.link && response.data.status === "ok"){
+              break;
+            }
+            await new Promise(response => setTimeout(response, pollInterval))
+          }
+          if (!response.data.link || response.data.status !== "ok"){
+            throw new Error('Conversion timed out or failed')
+          }
   
           const link = document.createElement('a');
           link.href = response.data.link;
@@ -170,8 +182,24 @@ function Converter() {
         } catch (error) {
           setLoading(false)
           setError(error)
+          console.log(error)
         }
       } else if (toFormat === "mp4") {
+        const youtubeUrl = document.getElementById("linkInput").value;
+      
+        const videoId = youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be') 
+            ? extractYoutubeId(youtubeUrl) : youtubeUrl;
+
+        const options = {
+          method: 'GET',
+          url: 'https://ytstream-download-youtube-videos.p.rapidapi.com/dl',
+          params: {id: videoId},
+          headers: {
+            'x-rapidapi-key': '32c5e32210mshcc9dc9d610925fcp163bfcjsn82b53c51c408',
+            'x-rapidapi-host': 'ytstream-download-youtube-videos.p.rapidapi.com'
+          }
+        };
+
         try {
           setLoading(true);
           setError(false);
@@ -181,44 +209,25 @@ function Converter() {
           setYoutubeURL(null);
           setErrorMessage(" ");
           setToFormat("");
-    
-          const response = await fetch(
-            `https://media-download-api.onrender.com/api/youtube/downloadMp4`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                link: youtubeUrl,
-              }),
-            }
-          );
-    
 
-          const contentDisposition = response.headers.get('Content-Disposition');
+          const response = await axios.request(options, {responseType: 'blob'});
 
-          const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
-          const filename = filenameMatch ? filenameMatch[1] : 'converted-video.mp4';
+          const blob = new Blob([response.data.adaptiveFormats[0].url])
+          const url = window.URL.createObjectURL(blob)
 
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-
-          const link = document.createElement("a");
+          const link = document.createElement('a');
           link.href = url;
-          // Use the video title in the download
-          link.setAttribute("download", filename);
+          link.setAttribute('download', `${response.data.title}.${toFormat}`);
           document.body.appendChild(link);
           link.click();
-    
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-    
-          setSuccess(true);
-          setLoading(false);
+          document.body.removeChild(link)
+
+          setSuccess(true)
+          setLoading(false)
         } catch (error) {
           setLoading(false);
           setError(error);
+          console.log(error)
         }
       }
     };
@@ -241,21 +250,25 @@ function Converter() {
           setErrorMessage(' ');
           setToFormat('')
 
-          const response = await axios.post("https://media-download-api.onrender.com/api/v1/soundcloud/downloadMp3", { link: soundCloudUrl }, {
-              responseType: 'blob' 
-          });
-          const title = await axios.post("https://media-download-api.onrender.com/api/v1/soundcloud/getTitle", { link: soundCloudUrl });
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_ENDPOINT}/soundcloud/downloadMp3`,
+            { link: soundCloudUrl },
+            {
+              responseType: 'blob',
+              withCredentials: true,
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
 
-          // const response = await axios.post("https://dev-media-download-api.onrender.com/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
-          //     responseType: 'blob' 
-          // });
+          const title = await axios.post(
+            `${import.meta.env.VITE_API_ENDPOINT}/soundcloud/getTitle`,
+            { link: soundCloudUrl },
+            {
+              withCredentials: true,
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
 
-
-          // const response = await axios.post("http://localhost:5000/api/soundcloud/downloadMp3", { link: soundCloudUrl }, {
-          //     responseType: 'blob' 
-          // });
-
-          // const title = await axios.post("http://localhost:5000/api/soundcloud/getTitle", { link: soundCloudUrl });
 
           const blob = new Blob([response.data], { type: 'audio/mpeg' });
           const url = window.URL.createObjectURL(blob);
@@ -291,7 +304,11 @@ function Converter() {
         setErrorMessage(' ');
         setToFormat('')
 
-        const response = await axios.post('https://media-download-api.onrender.com/api/v1/spotify/playlistInfo', {link: spotifyLink});
+        const response = await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/spotify/playlistInfo`, 
+         { link: spotifyLink },
+         { 
+          withCredentials: true
+        });
 
         const fileData = response.data
         const blob = new Blob([fileData], {type: 'text/plain'})
@@ -326,7 +343,11 @@ function Converter() {
         setErrorMessage(' ');
         setToFormat('')
         
-        const mdaResponse = await axios.post('https://media-download-api.onrender.com/api/v1/spotify/downloadMp3', {link: spotifyLink})
+        const mdaResponse = await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/spotify/downloadMp3`, 
+          {link: spotifyLink},
+        {
+          withCredentials: true,
+        })
         const videoId = mdaResponse.data;
 
         const options = {
@@ -340,7 +361,6 @@ function Converter() {
         };
         
           const response = await axios.request(options);
-          console.log(response);
   
           const link = document.createElement('a');
           link.href = response.data.link;
@@ -412,7 +432,7 @@ function Converter() {
                         <div className="absolute rounded bg-[#3D4A48] text-start md:text-base text-xs md:w-[250px] w-[100px] font-inter text-white shadow-md mt-1">
                           <div className='grid grid-cols-2 justify-between '>
                             <Option value="mp3" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">.mp3</Option>
-                            <Option value="mp4" className="p-3 md:w-[50%] hover:brightness-75 cursor-pointer">.mp4</Option>
+                            <Option value="mp4" className="p-3 md:w-[50%] brightness-75 cursor-pointer text-red-600" disabled>.mp4</Option>
                           </div>
                         </div>
                       </Select>
