@@ -7,7 +7,7 @@ function Home() {
     <div  className="">
 
       <div className="mt-[16vh]">
-        <ConvertCarousel/>
+        <Down/>
       </div>
 
     </div>
