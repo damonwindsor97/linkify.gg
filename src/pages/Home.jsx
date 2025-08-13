@@ -1,5 +1,4 @@
 import ConvertCarousel from "../components/ConvertCarousel"
-import ToolStatus from "../components/ToolStatus"
 import Down from "./Down"
 
 function Home() {
